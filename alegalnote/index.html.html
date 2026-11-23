@@ -1,0 +1,3246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Legal Note — Journal of Law &amp; Legal Scholarship</title>
+  <meta name="description" content="A Legal Note: Open-access peer-reviewed legal journal for research papers, statutory analysis, and case commentary." />
+  <meta name="citation_journal_title" content="A Legal Note" />
+  <meta name="citation_issn" content="2584-XXXX" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif']
+          },
+          colors: {
+            ink: '#111827',
+            muted: '#4B5563',
+            paper: '#FAFAFA',
+            legal: {
+              50: '#F0F4F8',
+              100: '#D9E2EC',
+              700: '#1E3A5F',
+              800: '#162C49',
+              900: '#0F1E33'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --bg-main: #FAFAFA;
+      --bg-surface: #FFFFFF;
+      --text-primary: #111827;
+      --text-secondary: #4B5563;
+      --border-subtle: #E5E7EB;
+    }
+    body.theme-sepia {
+      --bg-main: #F5F0E6;
+      --bg-surface: #FAF6EE;
+      --text-primary: #2B2620;
+      --text-secondary: #5C5346;
+      --border-subtle: #E2D9C8;
+    }
+    body.theme-dark {
+      --bg-main: #111318;
+      --bg-surface: #181B22;
+      --text-primary: #F3F4F6;
+      --text-secondary: #9CA3AF;
+      --border-subtle: #2A2F3A;
+    }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .surface {
+      background-color: var(--bg-surface);
+      border-color: var(--border-subtle);
+    }
+    .border-subtle {
+      border-color: var(--border-subtle);
+    }
+    .text-secondary {
+      color: var(--text-secondary);
+    }
+    .article-prose p {
+      margin-bottom: 1.25rem;
+      line-height: 1.85;
+    }
+    .article-prose h3 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      scroll-margin-top: 5.5rem;
+    }
+    .authority-link {
+      border-bottom: 1px dotted #1E3A5F;
+      color: inherit;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+      padding: 0 1px;
+      border-radius: 2px;
+    }
+    .authority-link:hover {
+      background-color: rgba(30, 58, 95, 0.12);
+    }
+    body.theme-dark .authority-link {
+      border-bottom-color: #93C5FD;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @media print {
+      header, footer, #toast-container, .no-print {
+        display: none !important;
+      }
+      body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-legal-100 selection:text-legal-900">
+
+  <!-- Reading Progress Bar -->
+  <div id="reading-progress-wrap" class="fixed top-0 left-0 right-0 h-0.5 bg-transparent z-50 hidden no-print">
+    <div id="reading-progress-bar" class="h-full bg-legal-700 transition-all duration-100" style="width: 0%"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 surface border-b backdrop-blur-md bg-opacity-95 no-print">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <!-- Brand -->
+      <button type="button" id="brand-home-btn" class="flex items-center gap-2.5 text-left group focus:outline-none shrink-0">
+        <div class="w-8 h-8 rounded bg-legal-800 text-white flex items-center justify-center font-serif font-semibold text-lg tracking-tight shrink-0">
+          §
+        </div>
+        <div class="leading-tight">
+          <div class="font-serif text-lg sm:text-xl font-semibold tracking-tight group-hover:text-legal-700 transition-colors">A Legal Note</div>
+          <div class="text-[11px] uppercase tracking-widest text-secondary hidden sm:block">Vol. 4 · Law &amp; Scholarship</div>
+        </div>
+      </button>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-1" aria-label="Primary Navigation">
+        <button type="button" data-nav="journal" class="nav-btn px-3 py-1.5 rounded-md text-sm font-medium transition-colors">Journal</button>
+        <button type="button" data-nav="archives" class="nav-btn px-3 py-1.5 rounded-md text-sm font-medium transition-colors">Archives</button>
+        <button type="button" data-nav="submit" class="nav-btn px-3 py-1.5 rounded-md text-sm font-medium transition-colors">Submit</button>
+        <button type="button" data-nav="saved" class="nav-btn px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5">
+          Saved
+          <span id="nav-saved-count" class="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 font-semibold">0</span>
+        </button>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-2">
+        <button type="button" id="cmd-palette-btn" title="Quick Search (Ctrl+K)" class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-subtle text-xs text-secondary hover:border-legal-700 transition-colors">
+          <i data-lucide="search" class="w-3.5 h-3.5"></i>
+          <span>Search</span>
+          <kbd class="text-[10px] px-1 py-0.5 rounded bg-gray-100 text-gray-600 font-mono">⌘K</kbd>
+        </button>
+        <button type="button" id="theme-cycle-btn" title="Cycle reading theme (Light / Sepia / Dark)" class="p-2 rounded-md border border-subtle hover:bg-gray-100/60 transition-colors text-secondary" aria-label="Switch reading theme">
+          <i data-lucide="sun" class="w-4 h-4"></i>
+        </button>
+        <button type="button" data-nav="admin" id="nav-admin-btn" class="px-3 py-1.5 rounded-md text-sm font-medium border border-subtle hover:border-legal-700 transition-colors flex items-center gap-1.5">
+          <i data-lucide="shield" class="w-3.5 h-3.5 text-legal-700"></i>
+          <span id="admin-nav-label">Admin</span>
+        </button>
+        <button type="button" id="mobile-menu-btn" class="md:hidden p-2 rounded-md border border-subtle text-secondary" aria-label="Toggle navigation menu">
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-nav" class="hidden md:hidden border-t border-subtle px-4 py-3 space-y-1 surface">
+      <button type="button" data-nav="journal" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-md text-sm font-medium">Journal</button>
+      <button type="button" data-nav="archives" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-md text-sm font-medium">Archives</button>
+      <button type="button" data-nav="submit" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-md text-sm font-medium">Submit Manuscript</button>
+      <button type="button" data-nav="saved" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-md text-sm font-medium flex items-center justify-between">
+        <span>Saved Reading List</span>
+        <span id="mobile-saved-count" class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">0</span>
+      </button>
+      <button type="button" id="mobile-cmd-btn" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-secondary">Quick Search…</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="app-root" class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8"></main>
+
+  <!-- Footer -->
+  <footer class="border-t border-subtle mt-16 py-8 text-xs text-secondary no-print">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <span class="font-serif font-semibold text-sm text-current">A Legal Note</span>
+        <span class="mx-2">·</span>
+        <span>Open-Access Peer-Reviewed Legal Publishing Platform</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <span>ISSN (Online): 2584-XXXX</span>
+        <button type="button" id="footer-rss-btn" class="hover:underline flex items-center gap-1">
+          <i data-lucide="rss" class="w-3 h-3"></i> RSS Feed
+        </button>
+        <button type="button" data-nav="submit" class="hover:underline">Editorial Guidelines</button>
+        <button type="button" data-nav="archives" class="hover:underline">Volumes</button>
+        <button type="button" data-nav="admin" class="hover:underline">Editorial Portal</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Container -->
+  <div id="modal-backdrop" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 no-print">
+    <div id="modal-box" class="surface border rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative"></div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm no-print"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // =========================================================================
+      // 1. SECURITY, SANITIZATION & UTILITY HELPERS
+      // =========================================================================
+      const STORAGE_KEY = 'a_legal_note_state_v2';
+
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      async function hashPassword(password) {
+        try {
+          if (window.crypto && window.crypto.subtle) {
+            const data = new TextEncoder().encode('ALN_SALT_2026::' + password);
+            const buf = await window.crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+          }
+        } catch (e) { /* fallback */ }
+        let h = 2166136261;
+        const s = 'ALN_SALT_2026::' + password;
+        for (let i = 0; i < s.length; i++) {
+          h ^= s.charCodeAt(i);
+          h = Math.imul(h, 16777619);
+        }
+        return 'fnv_' + (h >>> 0).toString(16);
+      }
+
+      function formatDate(iso) {
+        if (!iso) return '—';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return iso;
+        return d.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+      }
+
+      function nowTimestamp() {
+        return new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
+      function countWords(text) {
+        return (text || '').trim().split(/\s+/).filter(Boolean).length;
+      }
+
+      function estimateReadTime(text) {
+        return Math.max(2, Math.ceil(countWords(text) / 200)) + ' min read';
+      }
+
+      function generateId(prefix) {
+        return prefix + '-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Date.now().toString().slice(-4);
+      }
+
+      function copyTextToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+        }
+        return Promise.resolve(fallbackCopy(text));
+      }
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+        document.body.removeChild(ta);
+      }
+
+      function downloadFile(filename, content, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const colors = {
+          info: 'bg-gray-900 text-white border-gray-800',
+          success: 'bg-emerald-900 text-white border-emerald-800',
+          error: 'bg-red-900 text-white border-red-800',
+          warning: 'bg-amber-900 text-white border-amber-800'
+        };
+        toast.className = `px-4 py-2.5 rounded-lg border shadow-lg text-xs font-medium flex items-center gap-2 transition-all duration-200 ${colors[type] || colors.info}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(6px)';
+          setTimeout(() => toast.remove(), 200);
+        }, 3200);
+      }
+
+      // =========================================================================
+      // 2. LEGAL AUTHORITY KNOWLEDGE BASE (STATUTE & CASE AUTO-LINKING)
+      // =========================================================================
+      const LEGAL_AUTHORITIES = [
+        {
+          id: 'auth-art14',
+          match: 'Article 14',
+          title: 'Article 14, Constitution of India',
+          kind: 'Constitutional Provision',
+          citation: 'INDIA CONST. art. 14',
+          summary: 'Guarantees equality before the law and equal protection of the laws; encompasses the doctrinal bar against manifest arbitrariness in state action.'
+        },
+        {
+          id: 'auth-art21',
+          match: 'Article 21',
+          title: 'Article 21, Constitution of India',
+          kind: 'Constitutional Provision',
+          citation: 'INDIA CONST. art. 21',
+          summary: 'Protects life and personal liberty against deprivation except according to procedure established by law, construed to require fair, just, and reasonable process.'
+        },
+        {
+          id: 'auth-dpdp',
+          match: 'Digital Personal Data Protection Act, 2023',
+          title: 'Digital Personal Data Protection Act, 2023',
+          kind: 'Statute',
+          citation: 'Act No. 22 of 2023',
+          summary: 'Establishes India’s statutory framework for processing digital personal data, consent obligations, Data Principal rights, and Significant Data Fiduciary duties.'
+        },
+        {
+          id: 'auth-bsa63',
+          match: 'Section 63',
+          title: 'Section 63, Bharatiya Sakshya Adhiniyam, 2023',
+          kind: 'Statutory Provision',
+          citation: 'Bharatiya Sakshya Adhiniyam, 2023, § 63',
+          summary: 'Governs admissibility of electronic records and mandates a Schedule certificate including hash-value verification by custodian and expert.'
+        },
+        {
+          id: 'auth-bsa',
+          match: 'Bharatiya Sakshya Adhiniyam',
+          title: 'Bharatiya Sakshya Adhiniyam, 2023',
+          kind: 'Statute',
+          citation: 'Act No. 47 of 2023',
+          summary: 'Replaces the Indian Evidence Act, 1872 and expands statutory recognition of electronic and digital records as primary evidence.'
+        },
+        {
+          id: 'auth-arb17',
+          match: 'Section 17(2)',
+          title: 'Section 17(2), Arbitration and Conciliation Act, 1996',
+          kind: 'Statutory Provision',
+          citation: 'Arbitration & Conciliation Act, 1996, § 17(2)',
+          summary: 'Renders interim orders passed by an arbitral tribunal enforceable in the same manner as an order of a civil court under the Code of Civil Procedure.'
+        },
+        {
+          id: 'auth-comp166',
+          match: 'Section 166(2)',
+          title: 'Section 166(2), Companies Act, 2013',
+          kind: 'Statutory Provision',
+          citation: 'Companies Act, 2013, § 166(2)',
+          summary: 'Codifies directors’ fiduciary duty to act in good faith to promote company objects for the benefit of members, employees, community, and environment.'
+        },
+        {
+          id: 'auth-puttaswamy',
+          match: 'K.S. Puttaswamy',
+          title: 'K.S. Puttaswamy (Privacy-9J.) v. Union of India',
+          kind: 'Landmark Judgment',
+          citation: '(2017) 10 SCC 1',
+          summary: 'Nine-judge bench recognizing the fundamental right to privacy under Article 21 and articulating the four-fold proportionality test for state intrusions.'
+        }
+      ];
+
+      function linkLegalAuthorities(escapedText) {
+        let out = escapedText;
+        LEGAL_AUTHORITIES.forEach(auth => {
+          const escapedMatch = escapeHtml(auth.match).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const rx = new RegExp(`\\b(${escapedMatch})\\b`, 'g');
+          out = out.replace(rx, `<button type="button" class="authority-link" data-auth-id="${auth.id}" title="Inspect legal authority">$1</button>`);
+        });
+        return out;
+      }
+
+      // =========================================================================
+      // 3. SIMILARITY / PLAGIARISM PRE-CHECK ENGINE (3-WORD SHINGLES)
+      // =========================================================================
+      function tokenizeShingles(text) {
+        const words = (text || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(Boolean);
+        const set = new Set();
+        for (let i = 0; i <= words.length - 3; i++) {
+          set.add(words[i] + ' ' + words[i + 1] + ' ' + words[i + 2]);
+        }
+        return set;
+      }
+
+      function computeOriginalityReport(text, excludeId = null) {
+        const target = tokenizeShingles(text);
+        if (target.size === 0) return { originalityPct: 100, similarityPct: 0, matchedTitle: null };
+        let maxOverlap = 0;
+        let matchedTitle = null;
+
+        const corpus = [
+          ...state.articles.map(a => ({ id: a.id, title: a.title, text: a.abstract + ' ' + (a.sections || []).map(s => s.body).join(' ') })),
+          ...state.submissions.map(s => ({ id: s.id, title: s.title, text: s.abstract + ' ' + (s.body || '') }))
+        ];
+
+        corpus.forEach(doc => {
+          if (doc.id === excludeId) return;
+          const docSet = tokenizeShingles(doc.text);
+          if (docSet.size === 0) return;
+          let hits = 0;
+          target.forEach(sh => { if (docSet.has(sh)) hits++; });
+          const ratio = hits / target.size;
+          if (ratio > maxOverlap) {
+            maxOverlap = ratio;
+            matchedTitle = doc.title;
+          }
+        });
+
+        const simPct = Math.round(maxOverlap * 1000) / 10;
+        const origPct = Math.max(0, Math.round((100 - simPct) * 10) / 10);
+        return { originalityPct: origPct, similarityPct: simPct, matchedTitle: simPct > 3 ? matchedTitle : null };
+      }
+
+      // =========================================================================
+      // 4. INITIAL STATE & SAMPLE LEGAL SCHOLARSHIP
+      // =========================================================================
+      const DEFAULT_ARTICLES = [
+        {
+          id: 'art-101',
+          title: 'Proportionality and Algorithmic Governance: Rethinking Administrative Law under the Digital Personal Data Protection Framework',
+          type: 'Research Paper',
+          category: 'Technology & Privacy',
+          author: 'A. Sharma, LL.M.',
+          affiliation: 'Senior Research Fellow, Centre for Law & Governance',
+          volume: 'Vol. 4',
+          issue: 'Issue 2',
+          year: 2026,
+          citationCode: '2026 ALN Vol. 4(2) 101',
+          doi: '10.5555/aln.2026.42.101',
+          publishedDate: '2026-10-18',
+          status: 'Published',
+          peerReviewed: true,
+          featured: true,
+          views: 1428,
+          keywords: ['Administrative Law', 'Data Protection', 'Proportionality', 'Algorithmic Accountability'],
+          abstract: 'Automated decision-making systems increasingly mediate access to welfare, credit, and regulatory compliance. This paper examines how classical principles of natural justice and the proportionality standard can be adapted to review opaque state algorithms within India’s statutory data protection framework.',
+          sections: [
+            {
+              heading: 'I. Introduction',
+              body: 'Public administration is undergoing a quiet structural shift from discretionary human adjudication to automated scoring and eligibility engines. While efficiency gains are substantial, algorithmic opacity creates friction with Article 14’s guarantee against arbitrariness and the duty to provide reasoned decisions.[1] Traditional judicial review presupposes an identifiable decision-maker capable of articulating contemporaneous reasons; automated systems rarely satisfy that baseline without statutory scaffolding.'
+            },
+            {
+              heading: 'II. The Proportionality Test in Digital Governance',
+              body: 'Following K.S. Puttaswamy and constitutional jurisprudence on informational privacy under Article 21, any state interference must satisfy legality, legitimate aim, suitability, necessity, and balancing.[2] When applied to automated processing under the Digital Personal Data Protection Act, 2023, the necessity prong requires demonstrating that less intrusive, explainable models were considered before deploying black-box classifiers in high-stakes public domains.'
+            },
+            {
+              heading: 'III. Institutional Safeguards & Conclusion',
+              body: 'To bridge the accountability gap, this paper proposes mandatory Algorithmic Impact Assessments (AIAs) for state data fiduciaries, statutory right-to-explanation disclosures, and an independent technical audit wing assisting adjudicatory bodies.[3] Embedding these safeguards preserves innovation while anchoring automated governance to constitutional discipline.'
+            }
+          ],
+          footnotes: [
+            'See generally M.P. Jain & S.N. Jain, Principles of Administrative Law (9th ed., LexisNexis) on reasoned decisions and audi alteram partem.',
+            'K.S. Puttaswamy (Privacy-9J.) v. Union of India, (2017) 10 SCC 1 (establishing the four-fold proportionality framework).',
+            'Digital Personal Data Protection Act, 2023, No. 22 of 2023, § 10 (obligations of Significant Data Fiduciaries).'
+          ]
+        },
+        {
+          id: 'art-102',
+          title: 'Emergency Arbitrators and Seat-Centric Enforcement: Bridging Statutory Gaps in Commercial Dispute Resolution',
+          type: 'Research Paper',
+          category: 'Arbitration',
+          author: 'R. Deshmukh, Advocate',
+          affiliation: 'Commercial Litigation & Arbitration Practice',
+          volume: 'Vol. 4',
+          issue: 'Issue 2',
+          year: 2026,
+          citationCode: '2026 ALN Vol. 4(2) 144',
+          doi: '10.5555/aln.2026.42.144',
+          publishedDate: '2026-09-29',
+          status: 'Published',
+          peerReviewed: true,
+          featured: false,
+          views: 984,
+          keywords: ['Emergency Arbitration', 'Interim Relief', 'Party Autonomy', 'Commercial Law'],
+          abstract: 'Institutional arbitration rules worldwide recognize emergency arbitrators to grant urgent interim relief prior to tribunal constitution. This paper evaluates the enforceability of foreign-seated versus domestic-seated emergency awards and proposes targeted statutory amendments to eliminate procedural asymmetry.',
+          sections: [
+            {
+              heading: 'I. The Commercial Imperative for Urgent Relief',
+              body: 'In cross-border M&A and infrastructure disputes, asset dissipation can render a final arbitral award hollow before a three-member tribunal is even constituted. Emergency arbitration fills this interregnum by delivering binding interim measures within days while preserving confidentiality.[1]'
+            },
+            {
+              heading: 'II. Domestic Recognition vs. Foreign-Seated Uncertainty',
+              body: 'While judicial precedent has affirmed that India-seated emergency awards are enforceable under Section 17(2) of the Arbitration and Conciliation Act, 1996, parties with foreign-seated arbitrations still face indirect enforcement routes via Section 9.[2] Legislative codification defining "arbitral tribunal" to expressly include emergency arbitrators across Part I and Part II would align domestic practice with Singapore and Hong Kong.'
+            }
+          ],
+          footnotes: [
+            'SIAC Rules 2016, Schedule 1; MCIA Rules 2016, Rule 14 (Emergency Arbitrator procedures).',
+            'Amazon.com NV Investment Holdings LLC v. Future Retail Ltd., (2022) 1 SCC 209.'
+          ]
+        },
+        {
+          id: 'art-103',
+          title: 'Electronic Evidence and Chain-of-Custody Standards under the Bharatiya Sakshya Adhiniyam',
+          type: 'Article',
+          category: 'Criminal Law',
+          author: 'M. Nair, Research Fellow',
+          affiliation: 'Criminal Justice & Evidence Studies Group',
+          volume: 'Vol. 4',
+          issue: 'Issue 1',
+          year: 2026,
+          citationCode: '2026 ALN Vol. 4(1) 058',
+          doi: '10.5555/aln.2026.41.058',
+          publishedDate: '2026-06-14',
+          status: 'Published',
+          peerReviewed: true,
+          featured: false,
+          views: 1192,
+          keywords: ['Bharatiya Sakshya Adhiniyam', 'Electronic Evidence', 'Hash Values', 'Criminal Procedure'],
+          abstract: 'The statutory elevation of electronic records to primary evidence under Section 57 and the revised certification mandate under Section 63 of the Bharatiya Sakshya Adhiniyam reshape trial practice. This article analyzes practical hash-value verification hurdles facing trial courts and investigating agencies.',
+          sections: [
+            {
+              heading: 'I. Statutory Evolution of Electronic Admissibility',
+              body: 'Section 63 of the Bharatiya Sakshya Adhiniyam, 2023 introduces an explicit Schedule certificate requiring both the custodian and an expert to authenticate hash values of electronic records.[1] This dual-signature architecture seeks to curb tampering between seizure and trial.'
+            },
+            {
+              heading: 'II. Practical Evidentiary Challenges',
+              body: 'District-level forensic capacity remains uneven. Without standardized seizure kits and contemporaneous SHA-256 hashing at the point of collection, defense counsel can credibly challenge integrity even when formal certificates are appended later.[2] Training protocols must therefore accompany statutory reform.'
+            }
+          ],
+          footnotes: [
+            'Bharatiya Sakshya Adhiniyam, 2023, No. 47 of 2023, § 63 & Schedule.',
+            'Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal, (2020) 7 SCC 1 (precursor certification jurisprudence).'
+          ]
+        },
+        {
+          id: 'art-104',
+          title: 'Independent Directors and ESG Fiduciary Duties: Navigating Liability under Section 166(2)',
+          type: 'Case Comment',
+          category: 'Corporate & Commercial',
+          author: 'Editorial Board',
+          affiliation: 'A Legal Note Corporate Law Desk',
+          volume: 'Vol. 3',
+          issue: 'Issue 4',
+          year: 2025,
+          citationCode: '2025 ALN Vol. 3(4) 219',
+          doi: '10.5555/aln.2025.34.219',
+          publishedDate: '2025-11-20',
+          status: 'Published',
+          peerReviewed: false,
+          featured: false,
+          views: 645,
+          keywords: ['Company Law', 'ESG', 'Fiduciary Duty', 'Corporate Governance'],
+          abstract: 'Section 166(2) of the Companies Act, 2013 codifies stakeholder-oriented duties including protection of the environment. This comment examines the tension between shareholder value maximization and climate-risk disclosure liability for non-executive independent directors.',
+          sections: [
+            {
+              heading: 'I. Stakeholder Pluralism in Statutory Text',
+              body: 'Unlike jurisdictions where stakeholder governance remains soft law, Section 166(2) expressly requires directors to act in the best interests of the company, its employees, the community, and for the protection of the environment.[1]'
+            },
+            {
+              heading: 'II. Safe Harbors and Reasonable Diligence',
+              body: 'To avoid chilling board participation, courts should interpret Section 149(12) safe harbors robustly where independent directors rely in good faith on verified sustainability audits and documented board deliberations.'
+            }
+          ],
+          footnotes: [
+            'Companies Act, 2013, No. 18 of 2013, §§ 149(12), 166(2).'
+          ]
+        },
+        {
+          id: 'art-105',
+          title: 'Constitutional Morality as an Interpretive Standard: Scope, Limits, and Judicial Restraint',
+          type: 'Research Paper',
+          category: 'Constitutional Law',
+          author: 'V. Kulkarni, Ph.D. Candidate',
+          affiliation: 'Constitutional Studies Collective',
+          volume: 'Vol. 3',
+          issue: 'Issue 3',
+          year: 2025,
+          citationCode: '2025 ALN Vol. 3(3) 088',
+          doi: '10.5555/aln.2025.33.088',
+          publishedDate: '2025-08-10',
+          status: 'Published',
+          peerReviewed: true,
+          featured: false,
+          views: 1850,
+          keywords: ['Constitutional Morality', 'Judicial Review', 'Basic Structure', 'Fundamental Rights'],
+          abstract: 'Tracing the doctrinal trajectory of constitutional morality from Constituent Assembly debates to contemporary rights adjudication, this paper argues for an anchored, text-grounded methodology to prevent subjective judicial overreach.',
+          sections: [
+            {
+              heading: 'I. Origins in Constituent Assembly Thought',
+              body: 'Dr. B.R. Ambedkar invoked Grote’s conception of constitutional morality to emphasize reverence for institutional forms and peaceful constitutional contestation.[1] Contemporary jurisprudence under Article 14 and Article 21 has expanded the doctrine into a substantive counter-majoritarian shield.'
+            },
+            {
+              heading: 'II. Anchoring the Doctrine',
+              body: 'To maintain predictability, courts should tie invocations of constitutional morality explicitly to structural constitutional values—equality, dignity, fraternity, and secularism—rather than unenumerated moral intuitions.'
+            }
+          ],
+          footnotes: [
+            'Constituent Assembly Debates, Vol. VII (Nov. 4, 1948) (Speech of Dr. B.R. Ambedkar).'
+          ]
+        }
+      ];
+
+      const DEFAULT_SUBMISSIONS = [
+        {
+          id: 'ALN-2026-4812',
+          title: 'Pre-Packaged Insolvency Resolution for MSMEs: Empirical Bottlenecks and Reform',
+          type: 'Research Paper',
+          category: 'Corporate & Commercial',
+          author: 'K. Verma, Advocate',
+          affiliation: 'Insolvency & Restructuring Practice',
+          email: 'k.verma@example.org',
+          submittedDate: '2026-11-18',
+          status: 'Peer Review',
+          keywords: ['IBC', 'PPIRP', 'MSME', 'Insolvency'],
+          abstract: 'An empirical review of low adoption rates under Chapter III-A of the Insolvency and Bankruptcy Code, examining creditor hesitation and base-resolution plan friction.',
+          body: 'I. Introduction\nThe Pre-Packaged Insolvency Resolution Process (PPIRP) was introduced to provide a swift, debtor-in-possession restructuring framework for MSMEs. Despite legislative intent, filings remain sparse.\n\nII. Structural Bottlenecks\nFinancial creditors frequently express reluctance regarding Swiss Challenge mechanics and haircut accountability. Streamlining voting thresholds and clarifying safe harbors can unlock wider adoption.',
+          reviewerNotes: 'Strong doctrinal analysis. Recommend adding a brief comparison with UK pre-pack administration guidelines.',
+          attachmentName: 'Verma_PPIRP_MSME_2026.docx',
+          originalityPct: 99.1
+        },
+        {
+          id: 'ALN-2026-4905',
+          title: 'Bail Jurisprudence and Undertrial Detention: Reassessing Triple-Test Application',
+          type: 'Article',
+          category: 'Criminal Law',
+          author: 'S. Banerjee, LL.B.',
+          affiliation: 'Public Defender Fellowship',
+          email: 's.banerjee@example.org',
+          submittedDate: '2026-11-21',
+          status: 'Initial Screening',
+          keywords: ['Bail', 'Article 21', 'Undertrial Detention', 'BNSS'],
+          abstract: 'Examines how trial courts apply the flight-risk, evidence-tampering, and witness-intimidation triple test in non-violent offenses under the Bharatiya Nagarik Suraksha Sanhita.',
+          body: 'I. The Rule of Bail\nPersonal liberty under Article 21 demands that pre-trial detention remain the exception. Yet mechanical reliance on offense gravity continues to drive high undertrial populations.\n\nII. Way Forward\nStructured bail checklists and time-bound review hearings can operationalize appellate guidelines at the Magistrate level.',
+          reviewerNotes: '',
+          attachmentName: '',
+          originalityPct: 98.6
+        }
+      ];
+
+      const DEFAULT_STAFF = [
+        { id: 'usr-1', name: 'Editor-in-Chief', email: 'admin@alegalnote.org', role: 'Editor-in-Chief', passPlain: 'Admin@2026', active: true },
+        { id: 'usr-2', name: 'Managing Editor', email: 'editor@alegalnote.org', role: 'Managing Editor', passPlain: 'Editor@2026', active: true },
+        { id: 'usr-3', name: 'Peer Reviewer', email: 'reviewer@alegalnote.org', role: 'Peer Reviewer', passPlain: 'Review@2026', active: true }
+      ];
+
+      const DEFAULT_SECURITY = {
+        require2FA: true,
+        maxLoginAttempts: 3,
+        sessionTimeoutMinutes: 15,
+        doubleBlindDefault: true,
+        submissionsOpen: true,
+        supabaseUrl: '',
+        supabaseAnonKey: ''
+      };
+
+      const DEFAULT_AUDIT = [
+        { id: 'aud-1', time: '09:15:04', actor: 'System', role: 'Security', action: 'Initialized XSS sanitizer, Google Scholar meta engine & authority linker', severity: 'info' },
+        { id: 'aud-2', time: '10:42:19', actor: 'admin@alegalnote.org', role: 'Editor-in-Chief', action: 'Published Vol. 4 Issue 2 lead paper (art-101)', severity: 'success' }
+      ];
+
+      const CATEGORIES = [
+        'All',
+        'Constitutional Law',
+        'Corporate & Commercial',
+        'Criminal Law',
+        'Technology & Privacy',
+        'Arbitration',
+        'Environmental Law'
+      ];
+
+      const SUBMISSION_TYPES = ['Research Paper', 'Article', 'Case Comment', 'Legislative Brief'];
+
+      let state = {
+        view: 'journal',
+        selectedArticleId: null,
+        searchQuery: '',
+        categoryFilter: 'All',
+        sortBy: 'newest',
+        theme: 'light',
+        readerFontSize: 17,
+        savedIds: ['art-101'],
+        readerNotes: {}, // { [articleId]: [{ id, text, date }] }
+        articles: DEFAULT_ARTICLES,
+        submissions: DEFAULT_SUBMISSIONS,
+        staff: DEFAULT_STAFF,
+        security: DEFAULT_SECURITY,
+        auditLogs: DEFAULT_AUDIT,
+        emailNotifications: [],
+        session: {
+          authenticated: false,
+          user: null,
+          pending2FAUser: null,
+          active2FACode: null,
+          failedAttempts: 0,
+          lockedUntil: 0,
+          lastActivity: Date.now()
+        },
+        adminTab: 'overview',
+        blindReviewMode: true,
+        trackerResult: null,
+        isSpeaking: false,
+        pendingAttachmentName: ''
+      };
+
+      let sessionTimerInterval = null;
+      let lockoutTimerInterval = null;
+      let activeCharts = [];
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed.articles)) state.articles = parsed.articles;
+          if (Array.isArray(parsed.submissions)) state.submissions = parsed.submissions;
+          if (Array.isArray(parsed.savedIds)) state.savedIds = parsed.savedIds;
+          if (parsed.readerNotes && typeof parsed.readerNotes === 'object') state.readerNotes = parsed.readerNotes;
+          if (Array.isArray(parsed.staff)) state.staff = parsed.staff;
+          if (parsed.security) state.security = { ...DEFAULT_SECURITY, ...parsed.security };
+          if (Array.isArray(parsed.auditLogs)) state.auditLogs = parsed.auditLogs;
+          if (Array.isArray(parsed.emailNotifications)) state.emailNotifications = parsed.emailNotifications;
+          if (parsed.theme) state.theme = parsed.theme;
+        } catch (e) { /* storage unavailable */ }
+      }
+
+      function persistState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            articles: state.articles,
+            submissions: state.submissions,
+            savedIds: state.savedIds,
+            readerNotes: state.readerNotes,
+            staff: state.staff,
+            security: state.security,
+            auditLogs: state.auditLogs.slice(0, 80),
+            emailNotifications: state.emailNotifications.slice(0, 40),
+            theme: state.theme
+          }));
+        } catch (e) { /* ignore */ }
+      }
+
+      function addAudit(actor, role, action, severity = 'info') {
+        state.auditLogs.unshift({
+          id: generateId('AUD'),
+          time: nowTimestamp(),
+          actor,
+          role,
+          action,
+          severity
+        });
+        if (state.auditLogs.length > 80) state.auditLogs.pop();
+        persistState();
+      }
+
+      // =========================================================================
+      // 5. ACADEMIC INDEXING (GOOGLE SCHOLAR META, JSON-LD, RSS, CROSSREF XML)
+      // =========================================================================
+      function updateScholarHeadMetadata(art) {
+        document.querySelectorAll('meta[data-dynamic-scholar="true"], script[data-dynamic-scholar="true"]').forEach(el => el.remove());
+        if (!art) {
+          document.title = 'A Legal Note — Journal of Law & Legal Scholarship';
+          return;
+        }
+        document.title = `${art.title} — A Legal Note`;
+        const metaPairs = [
+          ['citation_title', art.title],
+          ['citation_author', art.author],
+          ['citation_publication_date', art.publishedDate],
+          ['citation_journal_title', 'A Legal Note'],
+          ['citation_volume', (art.volume || '').replace(/[^0-9]/g, '') || '4'],
+          ['citation_issue', (art.issue || '').replace(/[^0-9]/g, '') || '1'],
+          ['citation_doi', art.doi],
+          ['citation_keywords', (art.keywords || []).join('; ')],
+          ['og:title', art.title],
+          ['og:description', art.abstract],
+          ['og:type', 'article']
+        ];
+        metaPairs.forEach(([name, content]) => {
+          const m = document.createElement('meta');
+          m.setAttribute(name.startsWith('og:') ? 'property' : 'name', name);
+          m.setAttribute('content', content || '');
+          m.setAttribute('data-dynamic-scholar', 'true');
+          document.head.appendChild(m);
+        });
+        const ld = document.createElement('script');
+        ld.type = 'application/ld+json';
+        ld.setAttribute('data-dynamic-scholar', 'true');
+        ld.textContent = JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'ScholarlyArticle',
+          headline: art.title,
+          author: { '@type': 'Person', name: art.author, affiliation: art.affiliation || 'A Legal Note' },
+          datePublished: art.publishedDate,
+          isPartOf: { '@type': 'Periodical', name: 'A Legal Note', issn: '2584-XXXX' },
+          identifier: art.doi,
+          abstract: art.abstract,
+          keywords: (art.keywords || []).join(', ')
+        });
+        document.head.appendChild(ld);
+      }
+
+      function generateRssXml() {
+        const items = getPublishedArticles().map(a => `    <item>
+      <title><![CDATA[${a.title}]]></title>
+      <author>${escapeHtml(a.author)}</author>
+      <guid isPermaLink="false">${escapeHtml(a.doi)}</guid>
+      <pubDate>${new Date(a.publishedDate).toUTCString()}</pubDate>
+      <category>${escapeHtml(a.category)}</category>
+      <description><![CDATA[${a.abstract}]]></description>
+    </item>`).join('\n');
+        return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>A Legal Note — Journal of Law &amp; Legal Scholarship</title>
+    <description>Open-access peer-reviewed legal research papers, articles, and case comments.</description>
+    <language>en-in</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+${items}
+  </channel>
+</rss>`;
+      }
+
+      function generateCrossrefXml(art) {
+        const vol = (art.volume || '4').replace(/[^0-9]/g, '') || '4';
+        const iss = (art.issue || '1').replace(/[^0-9]/g, '') || '1';
+        const yr = art.year || 2026;
+        return `<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch version="5.3.1" xmlns="http://www.crossref.org/schema/5.3.1">
+  <head>
+    <doi_batch_id>ALN-${art.id}-${Date.now()}</doi_batch_id>
+    <timestamp>${Date.now()}</timestamp>
+    <depositor><depositor_name>A Legal Note Editorial Board</depositor_name><email_address>admin@alegalnote.org</email_address></depositor>
+    <registrant>A Legal Note</registrant>
+  </head>
+  <body>
+    <journal>
+      <journal_metadata>
+        <full_title>A Legal Note</full_title>
+        <issn media_type="electronic">2584-XXXX</issn>
+      </journal_metadata>
+      <journal_issue>
+        <publication_date media_type="online"><year>${yr}</year></publication_date>
+        <journal_volume><volume>${vol}</volume></journal_volume>
+        <issue>${iss}</issue>
+      </journal_issue>
+      <journal_article publication_type="full_text">
+        <titles><title>${escapeHtml(art.title)}</title></titles>
+        <contributors>
+          <person_name sequence="first" contributor_role="author"><surname>${escapeHtml(art.author)}</surname></person_name>
+        </contributors>
+        <publication_date media_type="online"><year>${yr}</year></publication_date>
+        <doi_data><doi>${escapeHtml(art.doi)}</doi><resource>https://alegalnote.org/articles/${escapeHtml(art.id)}</resource></doi_data>
+      </journal_article>
+    </journal>
+  </body>
+</doi_batch>`;
+      }
+
+      // =========================================================================
+      // 6. AUTOMATED LAW-REVIEW PDF TYPESETTER (jsPDF)
+      // =========================================================================
+      function downloadTypesetPdf(art) {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+          showToast('Opening print dialog for PDF export…', 'info');
+          window.print();
+          return;
+        }
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+          const margin = 56;
+          const pageW = doc.internal.pageSize.getWidth();
+          const pageH = doc.internal.pageSize.getHeight();
+          const maxW = pageW - margin * 2;
+          let y = 70;
+
+          const addHeaderFooter = (pageNum) => {
+            doc.setFont('times', 'italic');
+            doc.setFontSize(9);
+            doc.setTextColor(110, 110, 110);
+            doc.text(`A LEGAL NOTE  |  ${art.citationCode}`, margin, 36);
+            doc.text(`DOI: ${art.doi}`, pageW - margin, 36, { align: 'right' });
+            doc.setDrawColor(210, 210, 210);
+            doc.line(margin, 44, pageW - margin, 44);
+            doc.text(`Page ${pageNum}`, pageW / 2, pageH - 30, { align: 'center' });
+          };
+
+          const ensureSpace = (needed) => {
+            if (y + needed > pageH - 64) {
+              doc.addPage();
+              addHeaderFooter(doc.getNumberOfPages());
+              y = 70;
+            }
+          };
+
+          addHeaderFooter(1);
+
+          // Category & Type
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8.5);
+          doc.setTextColor(30, 58, 95);
+          doc.text(`${art.type.toUpperCase()}  ·  ${art.category.toUpperCase()}`, margin, y);
+          y += 18;
+
+          // Title
+          doc.setFont('times', 'bold');
+          doc.setFontSize(17);
+          doc.setTextColor(17, 24, 39);
+          const titleLines = doc.splitTextToSize(art.title, maxW);
+          doc.text(titleLines, margin, y);
+          y += titleLines.length * 21 + 8;
+
+          // Author
+          doc.setFont('times', 'italic');
+          doc.setFontSize(11);
+          doc.setTextColor(65, 65, 65);
+          doc.text(`${art.author} — ${art.affiliation || 'A Legal Note'}`, margin, y);
+          y += 16;
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8.5);
+          doc.text(`Published: ${formatDate(art.publishedDate)}   |   ${art.volume}, ${art.issue}`, margin, y);
+          y += 22;
+
+          // Abstract box
+          doc.setFont('times', 'normal');
+          doc.setFontSize(10);
+          const absLines = doc.splitTextToSize('Abstract: ' + art.abstract, maxW - 20);
+          const boxH = absLines.length * 14 + 20;
+          doc.setFillColor(246, 248, 250);
+          doc.setDrawColor(220, 226, 232);
+          doc.rect(margin, y, maxW, boxH, 'FD');
+          doc.setTextColor(40, 40, 40);
+          doc.text(absLines, margin + 10, y + 16);
+          y += boxH + 22;
+
+          // Sections
+          (art.sections || []).forEach(sec => {
+            ensureSpace(44);
+            doc.setFont('times', 'bold');
+            doc.setFontSize(12.5);
+            doc.setTextColor(17, 24, 39);
+            doc.text(sec.heading, margin, y);
+            y += 18;
+
+            doc.setFont('times', 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor(30, 30, 30);
+            const paras = (sec.body || '').split(/\n+/).filter(Boolean);
+            paras.forEach(p => {
+              const lines = doc.splitTextToSize(p, maxW);
+              lines.forEach(ln => {
+                ensureSpace(16);
+                doc.text(ln, margin, y);
+                y += 15.5;
+              });
+              y += 8;
+            });
+          });
+
+          // Footnotes
+          if ((art.footnotes || []).length) {
+            ensureSpace(46);
+            y += 8;
+            doc.setDrawColor(190, 190, 190);
+            doc.line(margin, y, margin + 140, y);
+            y += 16;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(75, 85, 99);
+            doc.text('FOOTNOTES & AUTHORITIES', margin, y);
+            y += 14;
+            doc.setFont('times', 'normal');
+            doc.setFontSize(9.5);
+            art.footnotes.forEach((fn, i) => {
+              const lines = doc.splitTextToSize(`${i + 1}. ${fn}`, maxW);
+              lines.forEach(ln => {
+                ensureSpace(14);
+                doc.text(ln, margin, y);
+                y += 13;
+              });
+              y += 4;
+            });
+          }
+
+          const safeSlug = art.id.replace(/[^a-zA-Z0-9_-]/g, '');
+          doc.save(`A-Legal-Note-${safeSlug}.pdf`);
+          showToast('Typeset PDF downloaded', 'success');
+        } catch (err) {
+          showToast('PDF generator fallback: opening print view', 'warning');
+          window.print();
+        }
+      }
+
+      // =========================================================================
+      // 7. SUPABASE PRODUCTION SQL SCHEMA GENERATOR
+      // =========================================================================
+      const SUPABASE_SQL_SCHEMA = `-- A Legal Note — Production PostgreSQL + Row-Level Security (RLS) Schema
+-- Compatible with Supabase Auth & Postgres 15+
+
+create table if not exists public.staff_profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text unique not null,
+  full_name text not null,
+  role text not null check (role in ('Editor-in-Chief', 'Managing Editor', 'Peer Reviewer')),
+  active boolean not null default true,
+  created_at timestamptz default now()
+);
+
+create table if not exists public.articles (
+  id text primary key,
+  title text not null,
+  type text not null,
+  category text not null,
+  author text not null,
+  affiliation text,
+  volume text not null,
+  issue text not null,
+  year int not null,
+  citation_code text unique not null,
+  doi text unique not null,
+  published_date date not null default current_date,
+  status text not null check (status in ('Published', 'Draft', 'Archived')),
+  peer_reviewed boolean not null default true,
+  featured boolean not null default false,
+  views int not null default 0,
+  keywords text[] default '{}',
+  abstract text not null,
+  sections jsonb not null default '[]'::jsonb,
+  footnotes text[] default '{}',
+  created_at timestamptz default now()
+);
+
+create table if not exists public.submissions (
+  id text primary key,
+  title text not null,
+  type text not null,
+  category text not null,
+  author text not null,
+  email text not null,
+  affiliation text,
+  keywords text[] default '{}',
+  abstract text not null,
+  body text not null,
+  attachment_url text,
+  originality_pct numeric(5,2),
+  status text not null default 'Initial Screening',
+  reviewer_notes text default '',
+  submitted_date date not null default current_date
+);
+
+create table if not exists public.audit_logs (
+  id bigserial primary key,
+  actor_email text not null,
+  role text not null,
+  action text not null,
+  severity text not null default 'info',
+  created_at timestamptz default now()
+);
+
+-- Enable Row-Level Security (RLS)
+alter table public.articles enable row level security;
+alter table public.submissions enable row level security;
+alter table public.staff_profiles enable row level security;
+alter table public.audit_logs enable row level security;
+
+-- Public can read Published articles only
+create policy "Public read published articles" on public.articles
+  for select using (status = 'Published');
+
+-- Editors can manage articles
+create policy "Editors manage articles" on public.articles
+  for all using (
+    exists (
+      select 1 from public.staff_profiles sp
+      where sp.id = auth.uid() and sp.active = true
+      and sp.role in ('Editor-in-Chief', 'Managing Editor')
+    )
+  );
+
+-- Anyone can submit a manuscript; only active staff can read/update queue
+create policy "Public insert submissions" on public.submissions
+  for insert with check (true);
+
+create policy "Staff read submissions" on public.submissions
+  for select using (
+    exists (select 1 from public.staff_profiles sp where sp.id = auth.uid() and sp.active = true)
+  );
+
+create policy "Staff update submissions" on public.submissions
+  for update using (
+    exists (select 1 from public.staff_profiles sp where sp.id = auth.uid() and sp.active = true)
+  );
+
+-- Audit logs append-only for authenticated staff; readable by Editor-in-Chief
+create policy "Chief read audit logs" on public.audit_logs
+  for select using (
+    exists (select 1 from public.staff_profiles sp where sp.id = auth.uid() and sp.role = 'Editor-in-Chief')
+  );
+`;
+
+      // =========================================================================
+      // 8. CITATIONS & MODALS
+      // =========================================================================
+      function buildCitations(art) {
+        const yr = art.year || new Date(art.publishedDate).getFullYear() || 2026;
+        const volNum = (art.volume || 'Vol. 4').replace(/[^0-9]/g, '') || '4';
+        const issNum = (art.issue || 'Issue 1').replace(/[^0-9]/g, '') || '1';
+        return {
+          ILI: `${art.author}, "${art.title}", ${volNum}(${issNum}) A Legal Note (${yr}), ${art.citationCode}.`,
+          Bluebook: `${art.author}, ${art.title}, ${volNum} A Legal Note ${art.citationCode.split(' ').pop() || '1'} (${yr}).`,
+          OSCOLA: `${art.author}, '${art.title}' (${yr}) ${volNum}(${issNum}) A Legal Note, DOI: ${art.doi}.`,
+          BibTeX: `@article{${art.id.replace(/[^a-zA-Z0-9]/g, '')},\n  author = {${art.author}},\n  title = {${art.title}},\n  journal = {A Legal Note},\n  volume = {${volNum}},\n  number = {${issNum}},\n  year = {${yr}},\n  doi = {${art.doi}}\n}`
+        };
+      }
+
+      function openModal(htmlContent) {
+        const backdrop = document.getElementById('modal-backdrop');
+        const box = document.getElementById('modal-box');
+        box.innerHTML = htmlContent;
+        backdrop.classList.remove('hidden');
+        backdrop.classList.add('flex');
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function closeModal() {
+        const backdrop = document.getElementById('modal-backdrop');
+        backdrop.classList.add('hidden');
+        backdrop.classList.remove('flex');
+      }
+
+      function openCitationModal(articleId) {
+        const art = state.articles.find(a => a.id === articleId);
+        if (!art) return;
+        const cites = buildCitations(art);
+        openModal(`
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h2 class="font-serif text-xl font-semibold">Cite This Publication</h2>
+              <p class="text-xs text-secondary mt-0.5">${escapeHtml(art.citationCode)} · DOI: ${escapeHtml(art.doi)}</p>
+            </div>
+            <button type="button" id="modal-close-btn" class="p-1.5 rounded-md hover:bg-gray-100/60 text-secondary" aria-label="Close modal">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="space-y-3">
+            ${Object.entries(cites).map(([style, text]) => `
+              <div class="p-3 rounded-lg border border-subtle bg-gray-50/50 dark:bg-transparent">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-xs font-semibold uppercase tracking-wider text-legal-700">${escapeHtml(style)}</span>
+                  <button type="button" class="copy-cite-btn text-xs px-2.5 py-1 rounded border border-subtle hover:border-legal-700 font-medium flex items-center gap-1" data-cite-style="${escapeHtml(style)}">
+                    <i data-lucide="copy" class="w-3 h-3"></i> Copy
+                  </button>
+                </div>
+                <pre class="text-xs whitespace-pre-wrap font-mono text-secondary leading-relaxed">${escapeHtml(text)}</pre>
+              </div>
+            `).join('')}
+          </div>
+          <div class="mt-4 pt-3 border-t border-subtle flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-secondary">Google Scholar &amp; Schema.org metadata active</span>
+            <button type="button" id="download-crossref-btn" class="px-3 py-1.5 rounded-lg border border-subtle hover:border-legal-700 font-medium flex items-center gap-1.5">
+              <i data-lucide="file-code" class="w-3.5 h-3.5"></i> Crossref DOI XML
+            </button>
+          </div>
+        `);
+        document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+        document.querySelectorAll('.copy-cite-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const style = btn.getAttribute('data-cite-style');
+            copyTextToClipboard(cites[style]).then(() => showToast(`${style} citation copied`, 'success'));
+          });
+        });
+        document.getElementById('download-crossref-btn').addEventListener('click', () => {
+          downloadFile(`crossref-${art.id}.xml`, generateCrossrefXml(art), 'application/xml');
+          showToast('Crossref DOI XML exported', 'success');
+        });
+      }
+
+      function openAuthorityModal(authId) {
+        const auth = LEGAL_AUTHORITIES.find(a => a.id === authId);
+        if (!auth) return;
+        const citingArticles = getPublishedArticles().filter(a => {
+          const full = a.abstract + ' ' + (a.sections || []).map(s => s.body).join(' ');
+          return full.includes(auth.match);
+        });
+        openModal(`
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <span class="text-[11px] font-semibold uppercase tracking-wider text-legal-700">${escapeHtml(auth.kind)}</span>
+              <h2 class="font-serif text-xl font-semibold mt-0.5">${escapeHtml(auth.title)}</h2>
+              <p class="text-xs font-mono text-secondary mt-0.5">${escapeHtml(auth.citation)}</p>
+            </div>
+            <button type="button" id="modal-close-btn" class="p-1.5 rounded-md hover:bg-gray-100/60 text-secondary"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
+          <p class="text-sm text-secondary leading-relaxed pb-4 border-b border-subtle">${escapeHtml(auth.summary)}</p>
+          <div class="pt-4 space-y-2">
+            <div class="text-xs font-semibold uppercase tracking-wider text-secondary">Cited in A Legal Note (${citingArticles.length})</div>
+            ${citingArticles.map(a => `
+              <button type="button" class="auth-open-art-btn w-full text-left p-2.5 rounded-lg border border-subtle hover:border-legal-700 transition-colors block" data-id="${escapeHtml(a.id)}">
+                <div class="font-serif text-sm font-medium">${escapeHtml(a.title)}</div>
+                <div class="text-[11px] text-secondary mt-0.5">${escapeHtml(a.author)} · ${escapeHtml(a.citationCode)}</div>
+              </button>
+            `).join('')}
+          </div>
+        `);
+        document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+        document.querySelectorAll('.auth-open-art-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            closeModal();
+            navigate('reader', { articleId: btn.getAttribute('data-id') });
+          });
+        });
+      }
+
+      function openCommandPalette() {
+        openModal(`
+          <div class="space-y-3">
+            <div class="flex items-center gap-2 pb-3 border-b border-subtle">
+              <i data-lucide="search" class="w-4 h-4 text-secondary"></i>
+              <input id="cmd-input" type="text" placeholder="Jump to paper, statute, case, or section…" class="flex-1 bg-transparent text-sm focus:outline-none" autofocus />
+              <button type="button" id="modal-close-btn" class="text-xs px-2 py-0.5 rounded border border-subtle text-secondary">ESC</button>
+            </div>
+            <div id="cmd-results" class="max-h-72 overflow-y-auto divide-y border-subtle text-xs"></div>
+          </div>
+        `);
+        document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+        const inp = document.getElementById('cmd-input');
+        const res = document.getElementById('cmd-results');
+
+        const renderCmd = (q) => {
+          const term = (q || '').trim().toLowerCase();
+          const artMatches = getPublishedArticles().filter(a => !term || a.title.toLowerCase().includes(term) || a.author.toLowerCase().includes(term) || a.category.toLowerCase().includes(term));
+          const authMatches = LEGAL_AUTHORITIES.filter(au => !term || au.title.toLowerCase().includes(term) || au.summary.toLowerCase().includes(term));
+          res.innerHTML = `
+            ${artMatches.slice(0, 5).map(a => `
+              <button type="button" class="cmd-art-item w-full text-left py-2.5 px-2 hover:bg-gray-100/60 flex items-center justify-between gap-3" data-id="${escapeHtml(a.id)}">
+                <div>
+                  <div class="font-medium">${escapeHtml(a.title)}</div>
+                  <div class="text-[11px] text-secondary">${escapeHtml(a.author)} · ${escapeHtml(a.citationCode)}</div>
+                </div>
+                <span class="text-[10px] px-1.5 py-0.5 rounded border border-subtle shrink-0">Paper</span>
+              </button>
+            `).join('')}
+            ${authMatches.slice(0, 4).map(au => `
+              <button type="button" class="cmd-auth-item w-full text-left py-2.5 px-2 hover:bg-gray-100/60 flex items-center justify-between gap-3" data-auth="${escapeHtml(au.id)}">
+                <div>
+                  <div class="font-medium">${escapeHtml(au.title)}</div>
+                  <div class="text-[11px] text-secondary">${escapeHtml(au.citation)}</div>
+                </div>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-legal-50 text-legal-700 shrink-0">Authority</span>
+              </button>
+            `).join('')}
+            ${artMatches.length === 0 && authMatches.length === 0 ? `<div class="py-6 text-center text-secondary">No matching papers or authorities.</div>` : ''}
+          `;
+          res.querySelectorAll('.cmd-art-item').forEach(b => b.addEventListener('click', () => { closeModal(); navigate('reader', { articleId: b.getAttribute('data-id') }); }));
+          res.querySelectorAll('.cmd-auth-item').forEach(b => b.addEventListener('click', () => openAuthorityModal(b.getAttribute('data-auth'))));
+        };
+        renderCmd('');
+        inp.addEventListener('input', (e) => renderCmd(e.target.value));
+        setTimeout(() => inp.focus(), 30);
+      }
+
+      function openDecisionEmailModal(sub) {
+        const subject = `[A Legal Note] Editorial Decision — ${sub.id}: ${sub.title}`;
+        const body = `Dear ${sub.author},\n\nThank you for submitting your manuscript "${sub.title}" (Tracking ID: ${sub.id}) to A Legal Note.\n\nCurrent Editorial Status: ${sub.status}\n${sub.reviewerNotes ? `\nEditorial / Peer Review Notes:\n${sub.reviewerNotes}\n` : ''}\nPlease reply to this email if you have any questions or revised drafts to submit.\n\nWarm regards,\nEditorial Board\nA Legal Note`;
+        openModal(`
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h2 class="font-serif text-xl font-semibold">Author Decision Notice</h2>
+              <p class="text-xs text-secondary">To: ${escapeHtml(sub.email)}</p>
+            </div>
+            <button type="button" id="modal-close-btn" class="p-1.5 rounded-md hover:bg-gray-100/60 text-secondary"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Subject</label>
+              <input id="email-subj-inp" type="text" value="${escapeHtml(subject)}" class="w-full px-3 py-2 rounded-lg border border-subtle surface" />
+            </div>
+            <div>
+              <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Message Body</label>
+              <textarea id="email-body-inp" rows="8" class="w-full px-3 py-2 rounded-lg border border-subtle surface font-mono">${escapeHtml(body)}</textarea>
+            </div>
+            <div class="flex flex-wrap justify-end gap-2 pt-2">
+              <button type="button" id="copy-email-btn" class="px-3.5 py-2 rounded-lg border border-subtle hover:border-legal-700 font-medium">Copy Email</button>
+              <button type="button" id="log-send-email-btn" class="px-3.5 py-2 rounded-lg bg-legal-800 text-white font-medium hover:bg-legal-900">Log &amp; Open Mail Client</button>
+            </div>
+          </div>
+        `);
+        document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+        document.getElementById('copy-email-btn').addEventListener('click', () => {
+          const full = `To: ${sub.email}\nSubject: ${document.getElementById('email-subj-inp').value}\n\n${document.getElementById('email-body-inp').value}`;
+          copyTextToClipboard(full).then(() => showToast('Decision email copied', 'success'));
+        });
+        document.getElementById('log-send-email-btn').addEventListener('click', () => {
+          const s = document.getElementById('email-subj-inp').value;
+          const b = document.getElementById('email-body-inp').value;
+          state.emailNotifications.unshift({ id: generateId('MAIL'), to: sub.email, subId: sub.id, status: sub.status, time: nowTimestamp() });
+          addAudit(state.session.user.email, state.session.user.role, `Dispatched ${sub.status} notice for ${sub.id}`, 'info');
+          persistState();
+          closeModal();
+          showToast('Notification logged', 'success');
+          window.location.href = `mailto:${encodeURIComponent(sub.email)}?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(b)}`;
+        });
+      }
+
+      function openConfirmModal(title, message, confirmLabel, onConfirm) {
+        openModal(`
+          <div class="space-y-4">
+            <h2 class="font-serif text-xl font-semibold">${escapeHtml(title)}</h2>
+            <p class="text-sm text-secondary leading-relaxed">${escapeHtml(message)}</p>
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" id="confirm-cancel-btn" class="px-4 py-2 rounded-lg border border-subtle text-sm font-medium hover:bg-gray-100/50">Cancel</button>
+              <button type="button" id="confirm-ok-btn" class="px-4 py-2 rounded-lg bg-red-700 text-white text-sm font-medium hover:bg-red-800">${escapeHtml(confirmLabel)}</button>
+            </div>
+          </div>
+        `);
+        document.getElementById('confirm-cancel-btn').addEventListener('click', closeModal);
+        document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+          closeModal();
+          onConfirm();
+        });
+      }
+
+      // =========================================================================
+      // 9. THEME, SPEECH & NAVIGATION
+      // =========================================================================
+      function stopSpeech() {
+        try {
+          if (window.speechSynthesis) window.speechSynthesis.cancel();
+        } catch (e) { /* ignore */ }
+        state.isSpeaking = false;
+      }
+
+      function toggleSpeechForArticle(art) {
+        if (!window.speechSynthesis) {
+          showToast('Audio reader unavailable in this browser', 'warning');
+          return;
+        }
+        if (state.isSpeaking) {
+          stopSpeech();
+          render();
+          return;
+        }
+        const text = `${art.title}. By ${art.author}. Abstract. ${art.abstract}. ` +
+          (art.sections || []).map(s => `${s.heading}. ${s.body}`).join(' ');
+        const utt = new SpeechSynthesisUtterance(text);
+        utt.rate = 1.0;
+        utt.onend = () => { state.isSpeaking = false; render(); };
+        utt.onerror = () => { state.isSpeaking = false; render(); };
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utt);
+        state.isSpeaking = true;
+        render();
+      }
+
+      function applyTheme() {
+        document.body.classList.remove('theme-sepia', 'theme-dark');
+        if (state.theme === 'sepia') document.body.classList.add('theme-sepia');
+        if (state.theme === 'dark') document.body.classList.add('theme-dark');
+        const btn = document.getElementById('theme-cycle-btn');
+        if (btn) {
+          const iconName = state.theme === 'dark' ? 'moon' : state.theme === 'sepia' ? 'book-open' : 'sun';
+          btn.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4"></i>`;
+        }
+      }
+
+      function updateNavUI() {
+        document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(btn => {
+          const target = btn.getAttribute('data-nav');
+          const active = (state.view === target) || (state.view === 'reader' && target === 'journal');
+          btn.classList.toggle('bg-legal-50', active && state.theme !== 'dark');
+          btn.classList.toggle('text-legal-700', active && state.theme !== 'dark');
+          btn.classList.toggle('font-semibold', active);
+        });
+        const countEl = document.getElementById('nav-saved-count');
+        const mCountEl = document.getElementById('mobile-saved-count');
+        if (countEl) countEl.textContent = state.savedIds.length;
+        if (mCountEl) mCountEl.textContent = state.savedIds.length;
+
+        const adminLabel = document.getElementById('admin-nav-label');
+        if (adminLabel) {
+          adminLabel.textContent = state.session.authenticated ? 'Admin · Active' : 'Admin';
+        }
+        const progressWrap = document.getElementById('reading-progress-wrap');
+        if (progressWrap) {
+          progressWrap.classList.toggle('hidden', state.view !== 'reader');
+        }
+      }
+
+      function navigate(view, opts = {}) {
+        stopSpeech();
+        state.view = view;
+        if (opts.articleId) {
+          state.selectedArticleId = opts.articleId;
+          const art = state.articles.find(a => a.id === opts.articleId);
+          if (art) {
+            art.views = (art.views || 0) + 1;
+            updateScholarHeadMetadata(art);
+            persistState();
+          }
+        } else {
+          updateScholarHeadMetadata(null);
+        }
+        document.getElementById('mobile-nav').classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        render();
+      }
+
+      function toggleSaved(articleId) {
+        const idx = state.savedIds.indexOf(articleId);
+        if (idx >= 0) {
+          state.savedIds.splice(idx, 1);
+          showToast('Removed from reading list', 'info');
+        } else {
+          state.savedIds.push(articleId);
+          showToast('Saved to reading list', 'success');
+        }
+        persistState();
+        render();
+      }
+
+      function getPublishedArticles() {
+        return state.articles.filter(a => a.status === 'Published');
+      }
+
+      // =========================================================================
+      // 10. VIEW RENDERERS
+      // =========================================================================
+      function renderJournalView() {
+        const published = getPublishedArticles();
+        const featured = published.find(a => a.featured) || published[0];
+
+        const q = state.searchQuery.trim().toLowerCase();
+        let filtered = published.filter(a => {
+          const catOk = state.categoryFilter === 'All' || a.category === state.categoryFilter;
+          if (!catOk) return false;
+          if (!q) return true;
+          return (
+            a.title.toLowerCase().includes(q) ||
+            a.author.toLowerCase().includes(q) ||
+            a.abstract.toLowerCase().includes(q) ||
+            a.citationCode.toLowerCase().includes(q) ||
+            (a.keywords || []).some(k => k.toLowerCase().includes(q))
+          );
+        });
+
+        if (state.sortBy === 'newest') {
+          filtered.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+        } else if (state.sortBy === 'popular') {
+          filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
+        } else if (state.sortBy === 'papers') {
+          filtered = filtered.filter(a => a.type === 'Research Paper');
+        } else if (state.sortBy === 'articles') {
+          filtered = filtered.filter(a => a.type !== 'Research Paper');
+        }
+
+        const isFiltering = q.length > 0 || state.categoryFilter !== 'All' || state.sortBy !== 'newest';
+
+        return `
+          <section class="pb-8 border-b border-subtle">
+            <div class="max-w-3xl">
+              <p class="text-xs font-semibold uppercase tracking-widest text-legal-700 mb-2">Open-Access Legal Scholarship</p>
+              <h1 class="font-serif text-3xl sm:text-4xl font-medium tracking-tight leading-tight">
+                Rigorous legal commentary, peer-reviewed papers, and statutory analysis.
+              </h1>
+              <p class="text-sm text-secondary mt-3 leading-relaxed">
+                Double-blind peer reviewed with Google Scholar indexing, typeset PDF downloads, interactive authority linking, and ILI / Bluebook / OSCOLA citations.
+              </p>
+            </div>
+          </section>
+
+          ${featured && !isFiltering ? `
+            <section class="py-8 border-b border-subtle">
+              <div class="surface border rounded-xl p-6 sm:p-8 shadow-xs">
+                <div class="flex flex-wrap items-center gap-2 text-xs mb-3">
+                  <span class="px-2 py-0.5 rounded bg-legal-800 text-white font-medium">Featured Paper</span>
+                  <span class="px-2 py-0.5 rounded border border-subtle font-medium">${escapeHtml(featured.category)}</span>
+                  <span class="text-secondary font-mono">${escapeHtml(featured.citationCode)}</span>
+                  ${featured.peerReviewed ? `<span class="text-emerald-700 font-medium flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Peer-Reviewed</span>` : ''}
+                </div>
+                <button type="button" class="open-article-btn text-left block group" data-id="${escapeHtml(featured.id)}">
+                  <h2 class="font-serif text-2xl sm:text-3xl font-medium leading-snug group-hover:text-legal-700 transition-colors">
+                    ${escapeHtml(featured.title)}
+                  </h2>
+                </button>
+                <p class="text-sm text-secondary mt-3 leading-relaxed max-w-4xl">
+                  ${escapeHtml(featured.abstract)}
+                </p>
+                <div class="mt-5 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-subtle">
+                  <div class="text-xs text-secondary">
+                    <span class="font-medium text-current">${escapeHtml(featured.author)}</span>
+                    <span class="mx-1.5">·</span>
+                    <span>${formatDate(featured.publishedDate)}</span>
+                    <span class="mx-1.5">·</span>
+                    <span>${estimateReadTime((featured.sections || []).map(s => s.body).join(' '))}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="open-article-btn px-4 py-2 rounded-lg bg-legal-800 text-white text-xs font-medium hover:bg-legal-900 transition-colors" data-id="${escapeHtml(featured.id)}">Read Paper</button>
+                    <button type="button" class="cite-btn px-3 py-2 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700 transition-colors" data-id="${escapeHtml(featured.id)}">Cite</button>
+                    <button type="button" class="save-btn p-2 rounded-lg border border-subtle hover:border-legal-700 transition-colors" data-id="${escapeHtml(featured.id)}" aria-label="Save article">
+                      <i data-lucide="bookmark" class="w-4 h-4 ${state.savedIds.includes(featured.id) ? 'fill-current text-legal-700' : 'text-secondary'}"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          ` : ''}
+
+          <section class="pt-8 pb-6 space-y-4">
+            <div class="flex flex-col sm:flex-row gap-3">
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-secondary absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <input
+                  id="journal-search-input"
+                  type="text"
+                  value="${escapeHtml(state.searchQuery)}"
+                  placeholder="Search by title, author, keyword, or citation..."
+                  class="w-full pl-10 pr-4 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700"
+                />
+              </div>
+              <select id="journal-sort-select" class="px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700">
+                <option value="newest" ${state.sortBy === 'newest' ? 'selected' : ''}>Sort: Newest First</option>
+                <option value="popular" ${state.sortBy === 'popular' ? 'selected' : ''}>Sort: Most Read</option>
+                <option value="papers" ${state.sortBy === 'papers' ? 'selected' : ''}>Filter: Research Papers Only</option>
+                <option value="articles" ${state.sortBy === 'articles' ? 'selected' : ''}>Filter: Articles &amp; Comments</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+              ${CATEGORIES.map(cat => `
+                <button
+                  type="button"
+                  data-cat="${escapeHtml(cat)}"
+                  class="cat-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${state.categoryFilter === cat ? 'bg-legal-800 text-white border-legal-800' : 'surface border-subtle text-secondary hover:border-legal-700'}"
+                >${escapeHtml(cat)}</button>
+              `).join('')}
+            </div>
+          </section>
+
+          <section class="divide-y border-subtle">
+            ${filtered.length === 0 ? `
+              <div class="py-16 text-center surface border rounded-xl">
+                <p class="font-serif text-lg">No matching publications found.</p>
+                <p class="text-xs text-secondary mt-1">Try adjusting your search terms or clearing filters.</p>
+                <button type="button" id="clear-filters-btn" class="mt-4 px-4 py-2 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700">Reset Filters</button>
+              </div>
+            ` : filtered.map(art => `
+              <article class="py-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div class="space-y-2 max-w-3xl">
+                  <div class="flex flex-wrap items-center gap-2 text-xs text-secondary">
+                    <span class="font-semibold text-legal-700">${escapeHtml(art.type)}</span>
+                    <span>·</span>
+                    <span>${escapeHtml(art.category)}</span>
+                    <span>·</span>
+                    <span class="font-mono text-[11px]">${escapeHtml(art.citationCode)}</span>
+                    ${art.peerReviewed ? `<span>·</span><span class="text-emerald-700 font-medium">Peer-Reviewed</span>` : ''}
+                  </div>
+                  <button type="button" class="open-article-btn text-left block group" data-id="${escapeHtml(art.id)}">
+                    <h3 class="font-serif text-xl font-medium leading-snug group-hover:text-legal-700 transition-colors">
+                      ${escapeHtml(art.title)}
+                    </h3>
+                  </button>
+                  <p class="text-sm text-secondary line-clamp-2 leading-relaxed">${escapeHtml(art.abstract)}</p>
+                  <div class="flex flex-wrap items-center gap-3 text-xs text-secondary pt-1">
+                    <span class="font-medium text-current">${escapeHtml(art.author)}</span>
+                    <span>${formatDate(art.publishedDate)}</span>
+                    <span>${estimateReadTime((art.sections || []).map(s => s.body).join(' '))}</span>
+                    <span>${art.views || 0} reads</span>
+                  </div>
+                </div>
+                <div class="flex sm:flex-col items-center sm:items-end gap-2 shrink-0">
+                  <button type="button" class="open-article-btn px-3.5 py-1.5 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700 transition-colors" data-id="${escapeHtml(art.id)}">Read</button>
+                  <div class="flex items-center gap-1.5">
+                    <button type="button" class="cite-btn p-1.5 rounded-md border border-subtle hover:border-legal-700 text-secondary" data-id="${escapeHtml(art.id)}" title="Cite">
+                      <i data-lucide="quote" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button type="button" class="save-btn p-1.5 rounded-md border border-subtle hover:border-legal-700" data-id="${escapeHtml(art.id)}" title="Save">
+                      <i data-lucide="bookmark" class="w-3.5 h-3.5 ${state.savedIds.includes(art.id) ? 'fill-current text-legal-700' : 'text-secondary'}"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            `).join('')}
+          </section>
+        `;
+      }
+
+      function renderReaderView() {
+        const art = state.articles.find(a => a.id === state.selectedArticleId);
+        if (!art) {
+          return `<div class="py-16 text-center"><p>Publication not found.</p><button type="button" id="back-to-journal-btn" class="mt-4 px-4 py-2 rounded-lg border border-subtle text-sm">Back to Journal</button></div>`;
+        }
+        const fullText = (art.sections || []).map(s => s.body).join(' ');
+        const isSaved = state.savedIds.includes(art.id);
+        const notes = state.readerNotes[art.id] || [];
+        const related = getPublishedArticles().filter(a => a.id !== art.id && (a.category === art.category || (a.keywords || []).some(k => (art.keywords || []).includes(k)))).slice(0, 2);
+
+        return `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Left Sticky Outline (Desktop) -->
+            <aside class="hidden lg:block lg:col-span-3 sticky top-24 space-y-6 no-print">
+              <div class="space-y-2">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-secondary">Paper Outline</div>
+                <nav class="space-y-1.5 text-xs border-l border-subtle pl-3">
+                  <a href="#sec-abstract" class="block text-secondary hover:text-legal-700">Abstract</a>
+                  ${(art.sections || []).map((s, idx) => `
+                    <a href="#sec-${idx}" class="block text-secondary hover:text-legal-700 truncate">${escapeHtml(s.heading)}</a>
+                  `).join('')}
+                  ${(art.footnotes || []).length ? `<a href="#sec-footnotes" class="block text-secondary hover:text-legal-700">Footnotes (${art.footnotes.length})</a>` : ''}
+                </nav>
+              </div>
+              <div class="p-3.5 rounded-lg surface border text-[11px] text-secondary space-y-1.5">
+                <div class="font-semibold text-current flex items-center gap-1.5">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-legal-700"></i> Authority Links Active
+                </div>
+                <p>Click any dotted-underlined statute or judgment in the text to inspect its legal summary and cross-citations.</p>
+              </div>
+            </aside>
+
+            <!-- Main Paper Column -->
+            <div class="lg:col-span-9 max-w-3xl">
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b border-subtle no-print">
+                <button type="button" id="back-to-journal-btn" class="text-xs font-medium text-secondary hover:text-current flex items-center gap-1.5">
+                  <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to Journal
+                </button>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <div class="flex items-center border border-subtle rounded-lg overflow-hidden text-xs">
+                    <button type="button" id="font-dec-btn" class="px-2 py-1.5 hover:bg-gray-100/50" title="Decrease font size">A-</button>
+                    <button type="button" id="font-inc-btn" class="px-2 py-1.5 border-l border-subtle hover:bg-gray-100/50" title="Increase font size">A+</button>
+                  </div>
+                  <button type="button" id="listen-paper-btn" class="px-2.5 py-1.5 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700 flex items-center gap-1.5 ${state.isSpeaking ? 'bg-legal-800 text-white border-legal-800' : ''}">
+                    <i data-lucide="${state.isSpeaking ? 'square' : 'volume-2'}" class="w-3.5 h-3.5"></i> ${state.isSpeaking ? 'Stop' : 'Listen'}
+                  </button>
+                  <button type="button" class="cite-btn px-2.5 py-1.5 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700 flex items-center gap-1.5" data-id="${escapeHtml(art.id)}">
+                    <i data-lucide="quote" class="w-3.5 h-3.5"></i> Cite
+                  </button>
+                  <button type="button" class="save-btn px-2.5 py-1.5 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700 flex items-center gap-1.5" data-id="${escapeHtml(art.id)}">
+                    <i data-lucide="bookmark" class="w-3.5 h-3.5 ${isSaved ? 'fill-current text-legal-700' : ''}"></i> ${isSaved ? 'Saved' : 'Save'}
+                  </button>
+                  <button type="button" id="download-pdf-btn" class="px-2.5 py-1.5 rounded-lg bg-legal-800 text-white text-xs font-medium hover:bg-legal-900 flex items-center gap-1.5">
+                    <i data-lucide="file-down" class="w-3.5 h-3.5"></i> Typeset PDF
+                  </button>
+                  <button type="button" id="print-paper-btn" class="p-1.5 rounded-lg border border-subtle text-secondary hover:border-legal-700" title="Print">
+                    <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <header class="space-y-4 pb-8 border-b border-subtle">
+                <div class="flex flex-wrap items-center gap-2 text-xs">
+                  <span class="px-2 py-0.5 rounded bg-legal-800 text-white font-medium">${escapeHtml(art.type)}</span>
+                  <span class="px-2 py-0.5 rounded border border-subtle font-medium">${escapeHtml(art.category)}</span>
+                  <span class="text-secondary">${escapeHtml(art.volume)}, ${escapeHtml(art.issue)}</span>
+                  ${art.peerReviewed ? `<span class="text-emerald-700 font-medium">· Double-Blind Peer Reviewed</span>` : ''}
+                </div>
+                <h1 class="font-serif text-3xl sm:text-4xl font-medium leading-tight tracking-tight">
+                  ${escapeHtml(art.title)}
+                </h1>
+                <div class="pt-1">
+                  <div class="text-sm font-medium">${escapeHtml(art.author)}</div>
+                  <div class="text-xs text-secondary">${escapeHtml(art.affiliation || 'Contributor, A Legal Note')}</div>
+                </div>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-secondary pt-2 font-mono">
+                  <span>Published: ${formatDate(art.publishedDate)}</span>
+                  <span>Cite: ${escapeHtml(art.citationCode)}</span>
+                  <span>DOI: ${escapeHtml(art.doi)}</span>
+                  <span>${estimateReadTime(fullText)}</span>
+                </div>
+              </header>
+
+              <section id="sec-abstract" class="my-8 p-5 rounded-xl surface border">
+                <div class="text-xs font-semibold uppercase tracking-wider text-legal-700 mb-2">Abstract</div>
+                <p class="text-sm leading-relaxed text-secondary">${linkLegalAuthorities(escapeHtml(art.abstract))}</p>
+                ${(art.keywords || []).length ? `
+                  <div class="mt-3 pt-3 border-t border-subtle flex flex-wrap items-center gap-1.5">
+                    <span class="text-xs text-secondary mr-1">Keywords:</span>
+                    ${art.keywords.map(k => `<span class="text-[11px] px-2 py-0.5 rounded bg-gray-100/80 text-gray-700">${escapeHtml(k)}</span>`).join('')}
+                  </div>
+                ` : ''}
+              </section>
+
+              <article class="article-prose font-serif" style="font-size: ${state.readerFontSize}px">
+                ${(art.sections || []).map((sec, idx) => `
+                  <section>
+                    <h3 id="sec-${idx}">${escapeHtml(sec.heading)}</h3>
+                    ${escapeHtml(sec.body).split(/\n+/).map(p => {
+                      const withAuth = linkLegalAuthorities(p);
+                      const withFn = withAuth.replace(/\[(\d+)\]/g, '<a href="#fn-$1" class="text-legal-700 font-sans text-xs align-super font-semibold hover:underline ml-0.5">[$1]</a>');
+                      return `<p>${withFn}</p>`;
+                    }).join('')}
+                  </section>
+                `).join('')}
+              </article>
+
+              ${(art.footnotes || []).length ? `
+                <section id="sec-footnotes" class="mt-12 pt-6 border-t border-subtle">
+                  <h2 class="text-xs font-semibold uppercase tracking-wider text-secondary mb-4">Footnotes &amp; Authorities</h2>
+                  <ol class="space-y-2 text-xs text-secondary list-decimal list-inside leading-relaxed">
+                    ${art.footnotes.map((fn, idx) => `<li id="fn-${idx + 1}" class="pl-1">${linkLegalAuthorities(escapeHtml(fn))}</li>`).join('')}
+                  </ol>
+                </section>
+              ` : ''}
+
+              <!-- Private Reader Margin Notes -->
+              <section class="mt-10 pt-6 border-t border-subtle space-y-4 no-print">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-xs font-semibold uppercase tracking-wider text-secondary">Private Study Notes (${notes.length})</h2>
+                  ${notes.length ? `<button type="button" id="export-notes-btn" class="text-xs text-legal-700 hover:underline">Export Notes (.txt)</button>` : ''}
+                </div>
+                <form id="add-reader-note-form" class="flex gap-2">
+                  <input id="reader-note-input" type="text" required placeholder="Add a private margin note or case brief for this paper…" class="flex-1 px-3 py-2 text-xs rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                  <button type="submit" class="px-3.5 py-2 rounded-lg bg-legal-800 text-white text-xs font-medium hover:bg-legal-900">Save Note</button>
+                </form>
+                ${notes.length ? `
+                  <div class="space-y-2">
+                    ${notes.map(n => `
+                      <div class="p-3 rounded-lg surface border flex items-start justify-between gap-3 text-xs">
+                        <div>
+                          <p class="leading-relaxed">${escapeHtml(n.text)}</p>
+                          <span class="text-[10px] text-secondary">${escapeHtml(n.date)}</span>
+                        </div>
+                        <button type="button" class="del-reader-note-btn text-secondary hover:text-red-700" data-note-id="${escapeHtml(n.id)}" title="Delete note">
+                          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </section>
+
+              <!-- Related Scholarship -->
+              ${related.length ? `
+                <section class="mt-10 pt-6 border-t border-subtle no-print">
+                  <h2 class="text-xs font-semibold uppercase tracking-wider text-secondary mb-4">Related Scholarship</h2>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    ${related.map(r => `
+                      <button type="button" class="open-article-btn text-left surface border rounded-xl p-4 hover:border-legal-700 transition-colors" data-id="${escapeHtml(r.id)}">
+                        <div class="text-[11px] text-legal-700 font-semibold">${escapeHtml(r.category)}</div>
+                        <div class="font-serif text-base font-medium mt-1 line-clamp-2">${escapeHtml(r.title)}</div>
+                        <div class="text-[11px] text-secondary mt-2">${escapeHtml(r.author)} · ${escapeHtml(r.citationCode)}</div>
+                      </button>
+                    `).join('')}
+                  </div>
+                </section>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderArchivesView() {
+        const published = getPublishedArticles();
+        const groups = {};
+        published.forEach(art => {
+          const key = `${art.volume || 'Vol. 4'} · ${art.issue || 'Issue 1'} (${art.year || 2026})`;
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(art);
+        });
+
+        return `
+          <div class="max-w-4xl space-y-8">
+            <div class="pb-6 border-b border-subtle flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-legal-700 mb-1">Journal Archives</p>
+                <h1 class="font-serif text-3xl font-medium">Volumes &amp; Issues</h1>
+                <p class="text-sm text-secondary mt-2">Browse indexed editions of A Legal Note by volume and issue.</p>
+              </div>
+              <button type="button" id="archive-rss-btn" class="px-3 py-1.5 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700 flex items-center gap-1.5">
+                <i data-lucide="rss" class="w-3.5 h-3.5 text-legal-700"></i> Download RSS Feed
+              </button>
+            </div>
+            <div class="space-y-6">
+              ${Object.entries(groups).map(([label, items]) => `
+                <section class="surface border rounded-xl p-6">
+                  <div class="flex items-center justify-between pb-4 mb-4 border-b border-subtle">
+                    <h2 class="font-serif text-xl font-medium">${escapeHtml(label)}</h2>
+                    <span class="text-xs text-secondary">${items.length} publication${items.length === 1 ? '' : 's'}</span>
+                  </div>
+                  <div class="space-y-4">
+                    ${items.map(art => `
+                      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <button type="button" class="open-article-btn text-left font-serif text-base font-medium hover:text-legal-700 transition-colors" data-id="${escapeHtml(art.id)}">
+                            ${escapeHtml(art.title)}
+                          </button>
+                          <div class="text-xs text-secondary mt-0.5">
+                            ${escapeHtml(art.author)} · <span class="font-mono">${escapeHtml(art.citationCode)}</span>
+                          </div>
+                        </div>
+                        <button type="button" class="cite-btn shrink-0 text-xs px-2.5 py-1 rounded border border-subtle hover:border-legal-700" data-id="${escapeHtml(art.id)}">Cite</button>
+                      </div>
+                    `).join('')}
+                  </div>
+                </section>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderSubmitView() {
+        return `
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+              <div class="pb-5 border-b border-subtle">
+                <p class="text-xs font-semibold uppercase tracking-widest text-legal-700 mb-1">Author Portal</p>
+                <h1 class="font-serif text-3xl font-medium">Submit a Manuscript</h1>
+                <p class="text-sm text-secondary mt-2">Upload a manuscript file or paste text directly. Submissions undergo automated originality pre-screening and double-blind peer review.</p>
+              </div>
+
+              ${!state.security.submissionsOpen ? `
+                <div class="p-6 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 text-sm">
+                  Submissions are currently paused by the Editorial Board. Please check back for the next call for papers.
+                </div>
+              ` : `
+                <form id="manuscript-submit-form" class="surface border rounded-xl p-6 space-y-5">
+                  <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-title">Manuscript Title *</label>
+                    <input id="sub-title" required type="text" placeholder="e.g., Constitutional Limits on Delegated Legislation in Digital Markets" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-type">Submission Category *</label>
+                      <select id="sub-type" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700">
+                        ${SUBMISSION_TYPES.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('')}
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-category">Practice Area *</label>
+                      <select id="sub-category" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700">
+                        ${CATEGORIES.filter(c => c !== 'All').map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-author">Author Name &amp; Credentials *</label>
+                      <input id="sub-author" required type="text" placeholder="e.g., P. Rao, LL.M." class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-email">Corresponding Email *</label>
+                      <input id="sub-email" required type="email" placeholder="author@institution.edu" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-affiliation">Institutional Affiliation</label>
+                      <input id="sub-affiliation" type="text" placeholder="University, Bar, or Research Centre" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-keywords">Keywords (comma-separated)</label>
+                      <input id="sub-keywords" type="text" placeholder="Constitutional Law, Privacy, Judicial Review" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                    </div>
+                  </div>
+
+                  <!-- Manuscript File Upload -->
+                  <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5">Attach Manuscript File (.docx, .pdf, .txt, .md)</label>
+                    <label class="flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-dashed border-subtle hover:border-legal-700 cursor-pointer text-xs text-secondary">
+                      <span id="sub-file-label" class="flex items-center gap-2">
+                        <i data-lucide="upload-cloud" class="w-4 h-4 text-legal-700"></i>
+                        ${state.pendingAttachmentName ? escapeHtml(state.pendingAttachmentName) : 'Click to attach file (.txt/.md auto-fills text below)'}
+                      </span>
+                      <span class="px-2.5 py-1 rounded border border-subtle text-[11px] font-medium">Browse</span>
+                      <input id="sub-file-input" type="file" accept=".docx,.pdf,.txt,.md" class="hidden" />
+                    </label>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="sub-abstract">Abstract (150–300 words) *</label>
+                    <textarea id="sub-abstract" required rows="3" placeholder="Concise summary of the legal question, methodology, and principal findings..." class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700"></textarea>
+                  </div>
+
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-secondary" for="sub-body">Full Manuscript Text *</label>
+                      <span id="sub-word-count" class="text-[11px] font-mono text-secondary">0 words</span>
+                    </div>
+                    <textarea id="sub-body" required rows="7" placeholder="Paste manuscript text with section headings (e.g., I. Introduction)..." class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700 font-serif"></textarea>
+                  </div>
+
+                  <!-- Live Similarity Pre-Check -->
+                  <div class="p-3.5 rounded-lg border border-subtle flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div id="similarity-check-output" class="text-secondary">Run an instant originality pre-check against journal archives before submitting.</div>
+                    <button type="button" id="run-similarity-btn" class="px-3 py-1.5 rounded-lg border border-subtle hover:border-legal-700 font-medium shrink-0">Check Originality</button>
+                  </div>
+
+                  <label class="flex items-start gap-2.5 text-xs text-secondary cursor-pointer">
+                    <input id="sub-originality" required type="checkbox" class="mt-0.5 rounded border-subtle" />
+                    <span>I affirm this manuscript is original, unpublished, free of plagiarism, and not concurrently under review elsewhere.</span>
+                  </label>
+
+                  <div class="pt-2">
+                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-legal-800 text-white text-sm font-medium hover:bg-legal-900 transition-colors">
+                      Submit for Editorial Review
+                    </button>
+                  </div>
+                </form>
+              `}
+            </div>
+
+            <aside class="space-y-6">
+              <div class="surface border rounded-xl p-5 space-y-3">
+                <h2 class="font-serif text-lg font-medium">Track Submission Status</h2>
+                <p class="text-xs text-secondary">Enter your tracking ID (try <button type="button" class="sample-track-btn underline font-mono text-legal-700" data-track="ALN-2026-4812">ALN-2026-4812</button>).</p>
+                <form id="track-status-form" class="flex gap-2">
+                  <input id="track-id-input" type="text" placeholder="ALN-2026-XXXX" class="flex-1 px-3 py-2 text-xs font-mono rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                  <button type="submit" class="px-3 py-2 rounded-lg bg-legal-800 text-white text-xs font-medium hover:bg-legal-900">Check</button>
+                </form>
+                ${state.trackerResult ? `
+                  <div class="mt-3 p-3.5 rounded-lg border border-subtle text-xs space-y-1.5">
+                    ${state.trackerResult.notFound ? `
+                      <p class="text-red-700 font-medium">No submission found for ID "${escapeHtml(state.trackerResult.query)}".</p>
+                    ` : `
+                      <div class="flex items-center justify-between">
+                        <span class="font-mono font-semibold">${escapeHtml(state.trackerResult.id)}</span>
+                        <span class="px-2 py-0.5 rounded-full bg-legal-50 text-legal-700 font-semibold">${escapeHtml(state.trackerResult.status)}</span>
+                      </div>
+                      <p class="font-medium">${escapeHtml(state.trackerResult.title)}</p>
+                      <p class="text-secondary">Submitted: ${formatDate(state.trackerResult.submittedDate)}${state.trackerResult.originalityPct ? ` · Originality: ${state.trackerResult.originalityPct}%` : ''}</p>
+                      ${state.trackerResult.reviewerNotes ? `<p class="text-secondary pt-1 border-t border-subtle"><strong>Editorial Note:</strong> ${escapeHtml(state.trackerResult.reviewerNotes)}</p>` : ''}
+                    `}
+                  </div>
+                ` : ''}
+              </div>
+
+              <div class="surface border rounded-xl p-5 space-y-3 text-xs text-secondary leading-relaxed">
+                <h2 class="font-serif text-lg font-medium text-current">Submission Guidelines</h2>
+                <ul class="space-y-2 list-disc list-inside">
+                  <li><strong>Research Papers:</strong> 4,000–8,000 words excluding footnotes.</li>
+                  <li><strong>Articles &amp; Essays:</strong> 1,500–3,500 words.</li>
+                  <li><strong>Case Comments:</strong> 1,200–2,500 words on recent rulings.</li>
+                  <li><strong>Citation Style:</strong> ILI, Bluebook (21st Ed.), or OSCOLA.</li>
+                  <li><strong>Anonymity:</strong> Remove author identifiers from the manuscript body for double-blind review.</li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+        `;
+      }
+
+      function renderSavedView() {
+        const saved = state.articles.filter(a => state.savedIds.includes(a.id) && a.status === 'Published');
+        return `
+          <div class="max-w-4xl space-y-6">
+            <div class="pb-5 border-b border-subtle flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-legal-700 mb-1">Personal Library</p>
+                <h1 class="font-serif text-3xl font-medium">Saved Reading List</h1>
+              </div>
+              <span class="text-xs text-secondary">${saved.length} saved</span>
+            </div>
+            ${saved.length === 0 ? `
+              <div class="py-16 text-center surface border rounded-xl">
+                <p class="font-serif text-lg">Your reading list is empty.</p>
+                <p class="text-xs text-secondary mt-1">Bookmark any article or paper to keep it here for reference.</p>
+                <button type="button" data-nav="journal" class="nav-inline-btn mt-4 px-4 py-2 rounded-lg bg-legal-800 text-white text-xs font-medium">Browse Journal</button>
+              </div>
+            ` : `
+              <div class="space-y-4">
+                ${saved.map(art => `
+                  <div class="surface border rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <div class="text-xs text-secondary">${escapeHtml(art.type)} · ${escapeHtml(art.citationCode)}</div>
+                      <button type="button" class="open-article-btn text-left font-serif text-lg font-medium hover:text-legal-700 mt-1" data-id="${escapeHtml(art.id)}">${escapeHtml(art.title)}</button>
+                      <div class="text-xs text-secondary mt-1">${escapeHtml(art.author)} · ${formatDate(art.publishedDate)}</div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <button type="button" class="open-article-btn px-3 py-1.5 rounded-lg bg-legal-800 text-white text-xs font-medium" data-id="${escapeHtml(art.id)}">Read</button>
+                      <button type="button" class="save-btn px-3 py-1.5 rounded-lg border border-subtle text-xs text-secondary hover:text-red-700" data-id="${escapeHtml(art.id)}">Remove</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        `;
+      }
+
+      // =========================================================================
+      // 11. ADMIN PANEL (SECURITY GATE + MANAGEMENT + ANALYTICS + BACKEND)
+      // =========================================================================
+      function renderAdminLogin() {
+        const now = Date.now();
+        const isLocked = state.session.lockedUntil > now;
+        const lockSecs = Math.ceil((state.session.lockedUntil - now) / 1000);
+
+        if (state.session.pending2FAUser) {
+          return `
+            <div class="max-w-md mx-auto my-8 surface border rounded-xl p-6 sm:p-8 space-y-5 shadow-xs">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-lg bg-legal-800 text-white flex items-center justify-center">
+                  <i data-lucide="key-round" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h1 class="font-serif text-xl font-semibold">Two-Factor Verification</h1>
+                  <p class="text-xs text-secondary">Account: ${escapeHtml(state.session.pending2FAUser.email)}</p>
+                </div>
+              </div>
+              <div class="p-3 rounded-lg bg-legal-50 text-legal-900 text-xs flex items-center justify-between">
+                <span>Simulated Authenticator Code:</span>
+                <span class="font-mono font-bold tracking-widest text-sm">${escapeHtml(state.session.active2FACode)}</span>
+              </div>
+              <form id="admin-2fa-form" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="totp-input">6-Digit Security Code</label>
+                  <input id="totp-input" required maxlength="6" inputmode="numeric" placeholder="000000" class="w-full px-3.5 py-2.5 text-center font-mono text-lg tracking-widest rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" />
+                </div>
+                <div class="flex gap-2">
+                  <button type="button" id="cancel-2fa-btn" class="px-4 py-2.5 rounded-lg border border-subtle text-xs font-medium">Cancel</button>
+                  <button type="submit" class="flex-1 py-2.5 rounded-lg bg-legal-800 text-white text-xs font-medium hover:bg-legal-900">Verify &amp; Enter Panel</button>
+                </div>
+              </form>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="max-w-md mx-auto my-6 surface border rounded-xl p-6 sm:p-8 space-y-5 shadow-xs">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-lg bg-legal-800 text-white flex items-center justify-center">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h1 class="font-serif text-xl font-semibold">Editorial Admin Portal</h1>
+                <p class="text-xs text-secondary">Role-based access with SHA-256 auth &amp; rate limiting</p>
+              </div>
+            </div>
+
+            ${isLocked ? `
+              <div class="p-3.5 rounded-lg border border-red-300 bg-red-50 text-red-900 text-xs">
+                <strong>Login temporarily locked.</strong> Too many failed attempts. Try again in <span id="lockout-secs">${lockSecs}</span>s.
+              </div>
+            ` : ''}
+
+            <form id="admin-login-form" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="login-email">Editorial Email</label>
+                <input id="login-email" required type="email" value="admin@alegalnote.org" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" ${isLocked ? 'disabled' : ''} />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-1.5" for="login-password">Password</label>
+                <input id="login-password" required type="password" value="Admin@2026" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-subtle surface focus:outline-none focus:border-legal-700" ${isLocked ? 'disabled' : ''} />
+              </div>
+              <button type="submit" class="w-full py-2.5 rounded-lg bg-legal-800 text-white text-sm font-medium hover:bg-legal-900 disabled:opacity-50" ${isLocked ? 'disabled' : ''}>
+                Sign In Securely
+              </button>
+            </form>
+
+            <div class="pt-4 border-t border-subtle space-y-2">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-secondary">Demo Credentials (Click to Fill)</p>
+              <div class="grid grid-cols-1 gap-1.5">
+                ${state.staff.filter(u => u.active).map(u => `
+                  <button type="button" class="demo-cred-btn text-left px-3 py-2 rounded-lg border border-subtle hover:border-legal-700 text-xs flex items-center justify-between" data-email="${escapeHtml(u.email)}" data-pass="${escapeHtml(u.passPlain)}">
+                    <span><strong>${escapeHtml(u.role)}</strong> · ${escapeHtml(u.email)}</span>
+                    <span class="font-mono text-[11px] text-secondary">${escapeHtml(u.passPlain)}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderAdminPanel() {
+        if (!state.session.authenticated) return renderAdminLogin();
+
+        const user = state.session.user;
+        const isChief = user.role === 'Editor-in-Chief';
+        const canEditArticles = isChief || user.role === 'Managing Editor';
+
+        const totalReads = state.articles.reduce((acc, a) => acc + (a.views || 0), 0);
+        const publishedCount = state.articles.filter(a => a.status === 'Published').length;
+        const pendingSubs = state.submissions.filter(s => s.status !== 'Published' && s.status !== 'Rejected').length;
+        const secAlerts = state.auditLogs.filter(l => l.severity === 'error' || l.severity === 'warning').length;
+
+        const remainingMs = Math.max(0, (state.security.sessionTimeoutMinutes * 60000) - (Date.now() - state.session.lastActivity));
+        const remMins = Math.floor(remainingMs / 60000);
+        const remSecs = Math.floor((remainingMs % 60000) / 1000).toString().padStart(2, '0');
+
+        return `
+          <div class="space-y-6">
+            <div class="surface border rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Authenticated</span>
+                  <span class="text-xs font-medium text-legal-700">${escapeHtml(user.role)}</span>
+                </div>
+                <h1 class="font-serif text-2xl font-medium mt-1">Admin Control Panel</h1>
+                <p class="text-xs text-secondary">${escapeHtml(user.email)} · Idle timeout in <span id="session-countdown" class="font-mono font-semibold">${remMins}:${remSecs}</span></p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                ${canEditArticles ? `
+                  <button type="button" id="new-article-btn" class="px-3.5 py-2 rounded-lg bg-legal-800 text-white text-xs font-medium hover:bg-legal-900 flex items-center gap-1.5">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> New Publication
+                  </button>
+                ` : ''}
+                <button type="button" id="admin-logout-btn" class="px-3.5 py-2 rounded-lg border border-subtle text-xs font-medium hover:border-red-700 hover:text-red-700 flex items-center gap-1.5">
+                  <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Lock &amp; Sign Out
+                </button>
+              </div>
+            </div>
+
+            <!-- Admin Sub-Nav -->
+            <div class="flex items-center gap-1 border-b border-subtle overflow-x-auto no-scrollbar">
+              ${[
+                { id: 'overview', label: 'Overview', icon: 'layout-dashboard' },
+                { id: 'articles', label: `Publications (${state.articles.length})`, icon: 'file-text' },
+                { id: 'submissions', label: `Peer Review (${pendingSubs})`, icon: 'inbox' },
+                { id: 'analytics', label: 'Analytics', icon: 'bar-chart-3' },
+                { id: 'security', label: 'Security & Audit', icon: 'shield-alert' },
+                { id: 'backend', label: 'Indexing & Backend', icon: 'database' }
+              ].map(t => `
+                <button type="button" data-admin-tab="${t.id}" class="admin-tab-btn shrink-0 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 ${state.adminTab === t.id ? 'border-legal-800 text-legal-700 font-semibold' : 'border-transparent text-secondary hover:text-current'}">
+                  <i data-lucide="${t.icon}" class="w-3.5 h-3.5"></i> ${t.label}
+                </button>
+              `).join('')}
+            </div>
+
+            ${state.adminTab === 'overview' ? `
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="surface border rounded-xl p-4">
+                  <div class="text-xs text-secondary">Published Works</div>
+                  <div class="text-2xl font-semibold mt-1">${publishedCount}</div>
+                  <div class="text-[11px] text-secondary mt-1">${state.articles.length - publishedCount} drafts/archived</div>
+                </div>
+                <div class="surface border rounded-xl p-4">
+                  <div class="text-xs text-secondary">Pending Manuscripts</div>
+                  <div class="text-2xl font-semibold mt-1">${pendingSubs}</div>
+                  <div class="text-[11px] text-legal-700 mt-1">In review pipeline</div>
+                </div>
+                <div class="surface border rounded-xl p-4">
+                  <div class="text-xs text-secondary">Cumulative Reads</div>
+                  <div class="text-2xl font-semibold mt-1">${totalReads.toLocaleString()}</div>
+                  <div class="text-[11px] text-emerald-700 mt-1">Across all volumes</div>
+                </div>
+                <div class="surface border rounded-xl p-4">
+                  <div class="text-xs text-secondary">Security Events</div>
+                  <div class="text-2xl font-semibold mt-1">${secAlerts}</div>
+                  <div class="text-[11px] text-secondary mt-1">2FA: ${state.security.require2FA ? 'Enforced' : 'Optional'}</div>
+                </div>
+              </div>
+
+              <div class="surface border rounded-xl p-5">
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="font-serif text-lg font-medium">Recent Editorial &amp; Security Log</h2>
+                  <button type="button" data-admin-tab="security" class="admin-tab-btn text-xs text-legal-700 hover:underline">View Full Audit</button>
+                </div>
+                <div class="divide-y border-subtle text-xs">
+                  ${state.auditLogs.slice(0, 6).map(log => `
+                    <div class="py-2.5 flex items-center justify-between gap-4">
+                      <div>
+                        <span class="font-medium">${escapeHtml(log.action)}</span>
+                        <span class="text-secondary ml-2">by ${escapeHtml(log.actor)} (${escapeHtml(log.role)})</span>
+                      </div>
+                      <span class="font-mono text-[11px] text-secondary shrink-0">${escapeHtml(log.time)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            ${state.adminTab === 'articles' ? `
+              <div class="surface border rounded-xl overflow-hidden">
+                <div class="p-4 border-b border-subtle flex flex-wrap items-center justify-between gap-3">
+                  <h2 class="font-serif text-lg font-medium">Manage Articles &amp; Papers</h2>
+                  ${!canEditArticles ? `<span class="text-xs text-amber-700">Read-only for Peer Reviewers</span>` : ''}
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead class="border-b border-subtle text-secondary uppercase tracking-wider text-[11px]">
+                      <tr>
+                        <th class="py-3 px-4">Title &amp; Citation</th>
+                        <th class="py-3 px-4">Author</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4">Reads</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y border-subtle">
+                      ${state.articles.map(art => `
+                        <tr>
+                          <td class="py-3 px-4 max-w-md">
+                            <div class="font-medium">${escapeHtml(art.title)}</div>
+                            <div class="text-[11px] text-secondary mt-0.5">${escapeHtml(art.type)} · ${escapeHtml(art.category)} · ${escapeHtml(art.citationCode)}</div>
+                          </td>
+                          <td class="py-3 px-4 text-secondary">${escapeHtml(art.author)}</td>
+                          <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 rounded-full text-[11px] font-medium ${art.status === 'Published' ? 'bg-emerald-100 text-emerald-800' : art.status === 'Draft' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-700'}">
+                              ${escapeHtml(art.status)}
+                            </span>
+                            ${art.featured ? `<span class="ml-1 px-1.5 py-0.5 rounded bg-legal-50 text-legal-700 text-[10px] font-semibold">Featured</span>` : ''}
+                          </td>
+                          <td class="py-3 px-4 font-mono">${art.views || 0}</td>
+                          <td class="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
+                            <button type="button" class="open-article-btn px-2 py-1 rounded border border-subtle hover:border-legal-700" data-id="${escapeHtml(art.id)}">View</button>
+                            ${canEditArticles ? `
+                              <button type="button" class="edit-article-btn px-2 py-1 rounded border border-subtle hover:border-legal-700" data-id="${escapeHtml(art.id)}">Edit</button>
+                              <button type="button" class="toggle-pub-btn px-2 py-1 rounded border border-subtle hover:border-legal-700" data-id="${escapeHtml(art.id)}">${art.status === 'Published' ? 'Unpublish' : 'Publish'}</button>
+                              ${isChief ? `<button type="button" class="delete-article-btn px-2 py-1 rounded border border-subtle hover:border-red-700 hover:text-red-700" data-id="${escapeHtml(art.id)}">Delete</button>` : ''}
+                            ` : ''}
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ` : ''}
+
+            ${state.adminTab === 'submissions' ? `
+              <div class="space-y-4">
+                <div class="surface border rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h2 class="font-serif text-lg font-medium">Manuscript &amp; Peer Review Queue</h2>
+                    <p class="text-xs text-secondary">Review originality scores, send decision notices, and promote accepted works live.</p>
+                  </div>
+                  <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                    <input type="checkbox" id="blind-mode-toggle" ${state.blindReviewMode ? 'checked' : ''} class="rounded border-subtle" />
+                    <span>Double-Blind Masking (Hide Author Identity)</span>
+                  </label>
+                </div>
+
+                ${state.submissions.length === 0 ? `
+                  <div class="surface border rounded-xl p-10 text-center text-xs text-secondary">No manuscripts in the queue.</div>
+                ` : state.submissions.map(sub => `
+                  <div class="surface border rounded-xl p-5 space-y-3">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div class="flex flex-wrap items-center gap-2 text-xs">
+                          <span class="font-mono font-semibold text-legal-700">${escapeHtml(sub.id)}</span>
+                          <span class="px-2 py-0.5 rounded-full bg-legal-50 text-legal-700 font-semibold">${escapeHtml(sub.status)}</span>
+                          <span class="text-secondary">${escapeHtml(sub.type)} · ${escapeHtml(sub.category)}</span>
+                          ${sub.originalityPct ? `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-mono text-[11px]">${sub.originalityPct}% Original</span>` : ''}
+                        </div>
+                        <h3 class="font-serif text-lg font-medium mt-1">${escapeHtml(sub.title)}</h3>
+                        <p class="text-xs text-secondary mt-0.5">
+                          Author: ${state.blindReviewMode ? '<span class="italic">[Masked for Double-Blind Review]</span>' : `${escapeHtml(sub.author)} (${escapeHtml(sub.email)})`} · Submitted ${formatDate(sub.submittedDate)}
+                          ${sub.attachmentName ? ` · File: <span class="font-mono">${escapeHtml(sub.attachmentName)}</span>` : ''}
+                        </p>
+                      </div>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <select class="sub-status-select px-2.5 py-1.5 text-xs rounded-lg border border-subtle surface" data-sub-id="${escapeHtml(sub.id)}">
+                          ${['Initial Screening', 'Peer Review', 'Revisions Requested', 'Accepted', 'Rejected', 'Published'].map(st => `
+                            <option value="${st}" ${sub.status === st ? 'selected' : ''}>${st}</option>
+                          `).join('')}
+                        </select>
+                        <button type="button" class="notify-author-btn px-2.5 py-1.5 rounded-lg border border-subtle hover:border-legal-700 text-xs font-medium flex items-center gap-1" data-sub-id="${escapeHtml(sub.id)}">
+                          <i data-lucide="mail" class="w-3.5 h-3.5"></i> Notify
+                        </button>
+                        ${canEditArticles && sub.status !== 'Published' ? `
+                          <button type="button" class="promote-sub-btn px-3 py-1.5 rounded-lg bg-emerald-800 text-white text-xs font-medium hover:bg-emerald-900" data-sub-id="${escapeHtml(sub.id)}">
+                            Publish Live
+                          </button>
+                        ` : ''}
+                      </div>
+                    </div>
+                    <p class="text-xs text-secondary leading-relaxed">${escapeHtml(sub.abstract)}</p>
+                    <div class="pt-2 border-t border-subtle flex flex-col sm:flex-row gap-2">
+                      <input type="text" class="sub-note-input flex-1 px-3 py-1.5 text-xs rounded-lg border border-subtle surface" data-sub-id="${escapeHtml(sub.id)}" value="${escapeHtml(sub.reviewerNotes || '')}" placeholder="Add peer review notes or revision feedback..." />
+                      <button type="button" class="save-sub-note-btn px-3 py-1.5 rounded-lg border border-subtle text-xs font-medium hover:border-legal-700" data-sub-id="${escapeHtml(sub.id)}">Save Note</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            ${state.adminTab === 'analytics' ? `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="surface border rounded-xl p-5">
+                  <h2 class="font-serif text-lg font-medium mb-1">Readership by Practice Area</h2>
+                  <p class="text-xs text-secondary mb-4">Cumulative article &amp; research paper views</p>
+                  <div class="relative h-64"><canvas id="chart-reads-cat"></canvas></div>
+                </div>
+                <div class="surface border rounded-xl p-5">
+                  <h2 class="font-serif text-lg font-medium mb-1">Editorial Pipeline Distribution</h2>
+                  <p class="text-xs text-secondary mb-4">Published works vs. active review stages</p>
+                  <div class="relative h-64"><canvas id="chart-pipeline"></canvas></div>
+                </div>
+              </div>
+            ` : ''}
+
+            ${state.adminTab === 'security' ? `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="space-y-6">
+                  <div class="surface border rounded-xl p-5 space-y-4">
+                    <h2 class="font-serif text-lg font-medium">Security Policies &amp; Backups</h2>
+                    ${!isChief ? `<p class="text-xs text-amber-700">Only Editor-in-Chief can modify security settings.</p>` : ''}
+                    <div class="space-y-3 text-xs">
+                      <label class="flex items-center justify-between gap-4 py-2 border-b border-subtle">
+                        <div>
+                          <div class="font-medium">Enforce Two-Factor Auth (2FA)</div>
+                          <div class="text-secondary">Require 6-digit verification code on admin sign-in</div>
+                        </div>
+                        <input type="checkbox" id="sec-2fa-toggle" ${state.security.require2FA ? 'checked' : ''} ${!isChief ? 'disabled' : ''} />
+                      </label>
+                      <label class="flex items-center justify-between gap-4 py-2 border-b border-subtle">
+                        <div>
+                          <div class="font-medium">Public Manuscript Submissions</div>
+                          <div class="text-secondary">Allow authors to submit papers via the portal</div>
+                        </div>
+                        <input type="checkbox" id="sec-subs-toggle" ${state.security.submissionsOpen ? 'checked' : ''} ${!isChief ? 'disabled' : ''} />
+                      </label>
+                      <div class="flex items-center justify-between gap-4 py-2 border-b border-subtle">
+                        <div>
+                          <div class="font-medium">Idle Session Timeout (minutes)</div>
+                          <div class="text-secondary">Auto-lock admin portal after inactivity</div>
+                        </div>
+                        <select id="sec-timeout-select" class="px-2.5 py-1 rounded border border-subtle surface" ${!isChief ? 'disabled' : ''}>
+                          ${[5, 15, 30, 60].map(m => `<option value="${m}" ${state.security.sessionTimeoutMinutes === m ? 'selected' : ''}>${m} min</option>`).join('')}
+                        </select>
+                      </div>
+                      <div class="pt-2 flex flex-wrap gap-2">
+                        <button type="button" id="export-json-btn" class="px-3 py-2 rounded-lg border border-subtle hover:border-legal-700 font-medium flex items-center gap-1.5">
+                          <i data-lucide="download" class="w-3.5 h-3.5"></i> Export JSON Backup
+                        </button>
+                        <label class="px-3 py-2 rounded-lg border border-subtle hover:border-legal-700 font-medium flex items-center gap-1.5 cursor-pointer">
+                          <i data-lucide="upload" class="w-3.5 h-3.5"></i> Restore JSON
+                          <input type="file" id="import-json-input" accept=".json" class="hidden" ${!isChief ? 'disabled' : ''} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Staff RBAC Management -->
+                  <div class="surface border rounded-xl p-5 space-y-4">
+                    <h2 class="font-serif text-lg font-medium">Editorial Staff &amp; Roles (RBAC)</h2>
+                    <div class="divide-y border-subtle text-xs">
+                      ${state.staff.map(s => `
+                        <div class="py-2.5 flex items-center justify-between gap-2">
+                          <div>
+                            <div class="font-medium">${escapeHtml(s.name)} <span class="text-secondary font-normal">(${escapeHtml(s.email)})</span></div>
+                            <div class="text-[11px] text-legal-700">${escapeHtml(s.role)} · ${s.active ? 'Active' : 'Suspended'}</div>
+                          </div>
+                          ${isChief && s.email !== user.email ? `
+                            <button type="button" class="toggle-staff-btn px-2.5 py-1 rounded border border-subtle hover:border-legal-700" data-staff-id="${escapeHtml(s.id)}">
+                              ${s.active ? 'Suspend' : 'Restore'}
+                            </button>
+                          ` : ''}
+                        </div>
+                      `).join('')}
+                    </div>
+                    ${isChief ? `
+                      <form id="add-staff-form" class="pt-3 border-t border-subtle grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                        <input id="staff-email-inp" required type="email" placeholder="editor2@alegalnote.org" class="px-2.5 py-1.5 rounded border border-subtle surface" />
+                        <select id="staff-role-inp" class="px-2.5 py-1.5 rounded border border-subtle surface">
+                          <option value="Managing Editor">Managing Editor</option>
+                          <option value="Peer Reviewer">Peer Reviewer</option>
+                        </select>
+                        <button type="submit" class="px-3 py-1.5 rounded bg-legal-800 text-white font-medium hover:bg-legal-900">Add Staff</button>
+                      </form>
+                    ` : ''}
+                  </div>
+                </div>
+
+                <!-- Audit Trail -->
+                <div class="surface border rounded-xl p-5 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h2 class="font-serif text-lg font-medium">Security Audit Trail</h2>
+                    <span class="text-[11px] text-secondary">${state.auditLogs.length} events</span>
+                  </div>
+                  <div class="max-h-[28rem] overflow-y-auto divide-y border-subtle text-xs">
+                    ${state.auditLogs.map(log => `
+                      <div class="py-2.5 flex items-start justify-between gap-3">
+                        <div>
+                          <span class="inline-block w-2 h-2 rounded-full mr-1.5 ${log.severity === 'error' ? 'bg-red-600' : log.severity === 'warning' ? 'bg-amber-500' : log.severity === 'success' ? 'bg-emerald-600' : 'bg-legal-700'}"></span>
+                          <span class="font-medium">${escapeHtml(log.action)}</span>
+                          <div class="text-[11px] text-secondary ml-3.5">${escapeHtml(log.actor)} · ${escapeHtml(log.role)}</div>
+                        </div>
+                        <span class="font-mono text-[11px] text-secondary shrink-0">${escapeHtml(log.time)}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+
+            ${state.adminTab === 'backend' ? `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Academic Indexing Exports -->
+                <div class="surface border rounded-xl p-5 space-y-4">
+                  <h2 class="font-serif text-lg font-medium">Academic Indexing &amp; Syndication</h2>
+                  <p class="text-xs text-secondary leading-relaxed">Google Scholar meta tags and Schema.org JSON-LD are injected dynamically on every paper view. Export feeds and DOI deposit packages below.</p>
+                  <div class="space-y-2.5 text-xs">
+                    <div class="p-3 rounded-lg border border-subtle flex items-center justify-between">
+                      <div>
+                        <div class="font-medium">RSS 2.0 Publication Feed</div>
+                        <div class="text-secondary">Syndicates all ${publishedCount} published works</div>
+                      </div>
+                      <button type="button" id="admin-rss-btn" class="px-3 py-1.5 rounded-lg border border-subtle hover:border-legal-700 font-medium">Download XML</button>
+                    </div>
+                    <div class="p-3 rounded-lg border border-subtle flex items-center justify-between">
+                      <div>
+                        <div class="font-medium">Crossref DOI Deposit Package</div>
+                        <div class="text-secondary">Schema 5.3.1 XML for latest published paper</div>
+                      </div>
+                      <button type="button" id="admin-crossref-btn" class="px-3 py-1.5 rounded-lg border border-subtle hover:border-legal-700 font-medium">Download XML</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Production Supabase Backend Schema -->
+                <div class="surface border rounded-xl p-5 space-y-4">
+                  <div class="flex items-center justify-between">
+                    <h2 class="font-serif text-lg font-medium">Production Backend (Supabase + RLS)</h2>
+                    <span class="text-[11px] px-2 py-0.5 rounded bg-legal-50 text-legal-700 font-medium">Ready to Deploy</span>
+                  </div>
+                  <p class="text-xs text-secondary leading-relaxed">
+                    Preview mode runs locally in your browser. To deploy multi-user production authentication and persistent PostgreSQL storage, run this Row-Level Security schema in Supabase and deploy the site on Cloudflare Pages or Vercel.
+                  </p>
+                  <pre class="p-3 rounded-lg bg-gray-900 text-gray-100 text-[11px] font-mono max-h-48 overflow-y-auto">${escapeHtml(SUPABASE_SQL_SCHEMA)}</pre>
+                  <div class="flex flex-wrap gap-2 text-xs">
+                    <button type="button" id="copy-sql-btn" class="px-3.5 py-2 rounded-lg bg-legal-800 text-white font-medium hover:bg-legal-900">Copy SQL Schema</button>
+                    <button type="button" id="download-sql-btn" class="px-3.5 py-2 rounded-lg border border-subtle hover:border-legal-700 font-medium">Download supabase_schema.sql</button>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      function renderAdminCharts() {
+        activeCharts.forEach(c => { try { c.destroy(); } catch (e) { /* ignore */ } });
+        activeCharts = [];
+        if (state.view !== 'admin' || !state.session.authenticated || state.adminTab !== 'analytics' || !window.Chart) return;
+
+        const c1 = document.getElementById('chart-reads-cat');
+        const c2 = document.getElementById('chart-pipeline');
+        if (c1) {
+          const cats = CATEGORIES.filter(c => c !== 'All');
+          const totals = cats.map(cat => state.articles.filter(a => a.category === cat).reduce((s, a) => s + (a.views || 0), 0));
+          activeCharts.push(new Chart(c1, {
+            type: 'bar',
+            data: {
+              labels: cats.map(c => c.split(' ')[0]),
+              datasets: [{ label: 'Reads', data: totals, backgroundColor: '#1E3A5F', borderRadius: 4 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+          }));
+        }
+        if (c2) {
+          const stages = ['Published', 'Initial Screening', 'Peer Review', 'Revisions Requested', 'Accepted'];
+          const counts = [
+            state.articles.filter(a => a.status === 'Published').length,
+            state.submissions.filter(s => s.status === 'Initial Screening').length,
+            state.submissions.filter(s => s.status === 'Peer Review').length,
+            state.submissions.filter(s => s.status === 'Revisions Requested').length,
+            state.submissions.filter(s => s.status === 'Accepted').length
+          ];
+          activeCharts.push(new Chart(c2, {
+            type: 'doughnut',
+            data: {
+              labels: stages,
+              datasets: [{ data: counts, backgroundColor: ['#162C49', '#64748B', '#1E3A5F', '#D97706', '#059669'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } }
+          }));
+        }
+      }
+
+      // =========================================================================
+      // 12. ARTICLE EDITOR MODAL
+      // =========================================================================
+      function openArticleEditorModal(articleId = null) {
+        const existing = articleId ? state.articles.find(a => a.id === articleId) : null;
+        const bodyCombined = existing
+          ? (existing.sections || []).map(s => `${s.heading}\n${s.body}`).join('\n\n')
+          : '';
+        const footnotesCombined = existing ? (existing.footnotes || []).join('\n') : '';
+
+        openModal(`
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-subtle">
+            <h2 class="font-serif text-xl font-semibold">${existing ? 'Edit Publication' : 'Publish New Article / Paper'}</h2>
+            <button type="button" id="modal-close-btn" class="p-1.5 rounded-md hover:bg-gray-100/60 text-secondary"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
+          <form id="article-editor-form" class="space-y-4 text-xs">
+            <div>
+              <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Title *</label>
+              <input id="ed-title" required type="text" value="${escapeHtml(existing ? existing.title : '')}" class="w-full px-3 py-2 text-sm rounded-lg border border-subtle surface" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Type</label>
+                <select id="ed-type" class="w-full px-3 py-2 rounded-lg border border-subtle surface">
+                  ${SUBMISSION_TYPES.map(t => `<option value="${t}" ${existing && existing.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Category</label>
+                <select id="ed-category" class="w-full px-3 py-2 rounded-lg border border-subtle surface">
+                  ${CATEGORIES.filter(c => c !== 'All').map(c => `<option value="${c}" ${existing && existing.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Status</label>
+                <select id="ed-status" class="w-full px-3 py-2 rounded-lg border border-subtle surface">
+                  ${['Published', 'Draft', 'Archived'].map(s => `<option value="${s}" ${existing && existing.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Author *</label>
+                <input id="ed-author" required type="text" value="${escapeHtml(existing ? existing.author : '')}" class="w-full px-3 py-2 rounded-lg border border-subtle surface" />
+              </div>
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Affiliation</label>
+                <input id="ed-affiliation" type="text" value="${escapeHtml(existing ? existing.affiliation : '')}" class="w-full px-3 py-2 rounded-lg border border-subtle surface" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Volume</label>
+                <input id="ed-volume" type="text" value="${escapeHtml(existing ? existing.volume : 'Vol. 4')}" class="w-full px-3 py-2 rounded-lg border border-subtle surface" />
+              </div>
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Issue</label>
+                <input id="ed-issue" type="text" value="${escapeHtml(existing ? existing.issue : 'Issue 2')}" class="w-full px-3 py-2 rounded-lg border border-subtle surface" />
+              </div>
+              <div>
+                <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Citation Code</label>
+                <input id="ed-citation" type="text" value="${escapeHtml(existing ? existing.citationCode : '2026 ALN Vol. 4(2) ' + Math.floor(200 + Math.random() * 700))}" class="w-full px-3 py-2 font-mono rounded-lg border border-subtle surface" />
+              </div>
+            </div>
+            <div>
+              <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Abstract *</label>
+              <textarea id="ed-abstract" required rows="2" class="w-full px-3 py-2 rounded-lg border border-subtle surface">${escapeHtml(existing ? existing.abstract : '')}</textarea>
+            </div>
+            <div>
+              <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Body (Separate sections with blank lines; first line = heading) *</label>
+              <textarea id="ed-body" required rows="6" class="w-full px-3 py-2 rounded-lg border border-subtle surface font-serif">${escapeHtml(bodyCombined)}</textarea>
+            </div>
+            <div>
+              <label class="block font-semibold uppercase tracking-wider text-secondary mb-1">Footnotes (One per line)</label>
+              <textarea id="ed-footnotes" rows="2" class="w-full px-3 py-2 rounded-lg border border-subtle surface">${escapeHtml(footnotesCombined)}</textarea>
+            </div>
+            <div class="flex flex-wrap items-center gap-5 pt-1">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input id="ed-peer" type="checkbox" ${!existing || existing.peerReviewed ? 'checked' : ''} />
+                <span>Peer-Reviewed Badge</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input id="ed-featured" type="checkbox" ${existing && existing.featured ? 'checked' : ''} />
+                <span>Feature on Home Page</span>
+              </label>
+            </div>
+            <div class="flex justify-end gap-2 pt-3 border-t border-subtle">
+              <button type="button" id="ed-cancel-btn" class="px-4 py-2 rounded-lg border border-subtle font-medium">Cancel</button>
+              <button type="submit" class="px-4 py-2 rounded-lg bg-legal-800 text-white font-medium hover:bg-legal-900">${existing ? 'Save Changes' : 'Publish Work'}</button>
+            </div>
+          </form>
+        `);
+
+        document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+        document.getElementById('ed-cancel-btn').addEventListener('click', closeModal);
+        document.getElementById('article-editor-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const rawBlocks = document.getElementById('ed-body').value.trim().split(/\n\s*\n/).filter(Boolean);
+          const sections = rawBlocks.map((block, i) => {
+            const lines = block.split('\n');
+            if (lines.length > 1) return { heading: lines[0].trim(), body: lines.slice(1).join('\n').trim() };
+            return { heading: i === 0 ? 'I. Overview' : `Section ${i + 1}`, body: block.trim() };
+          });
+          const footnotes = document.getElementById('ed-footnotes').value.split('\n').map(s => s.trim()).filter(Boolean);
+          const isFeatured = document.getElementById('ed-featured').checked;
+          if (isFeatured) state.articles.forEach(a => { a.featured = false; });
+
+          const payload = {
+            title: document.getElementById('ed-title').value.trim(),
+            type: document.getElementById('ed-type').value,
+            category: document.getElementById('ed-category').value,
+            status: document.getElementById('ed-status').value,
+            author: document.getElementById('ed-author').value.trim(),
+            affiliation: document.getElementById('ed-affiliation').value.trim(),
+            volume: document.getElementById('ed-volume').value.trim() || 'Vol. 4',
+            issue: document.getElementById('ed-issue').value.trim() || 'Issue 2',
+            citationCode: document.getElementById('ed-citation').value.trim(),
+            abstract: document.getElementById('ed-abstract').value.trim(),
+            sections: sections.length ? sections : [{ heading: 'I. Text', body: '' }],
+            footnotes,
+            peerReviewed: document.getElementById('ed-peer').checked,
+            featured: isFeatured
+          };
+
+          if (existing) {
+            Object.assign(existing, payload);
+            addAudit(state.session.user.email, state.session.user.role, `Updated publication "${payload.title.slice(0, 45)}"`, 'info');
+            showToast('Publication updated', 'success');
+          } else {
+            const newId = 'art-' + Date.now().toString().slice(-5);
+            state.articles.unshift({
+              id: newId,
+              year: new Date().getFullYear(),
+              doi: `10.5555/aln.${new Date().getFullYear()}.${newId}`,
+              publishedDate: new Date().toISOString().slice(0, 10),
+              views: 0,
+              keywords: [payload.category, payload.type],
+              ...payload
+            });
+            addAudit(state.session.user.email, state.session.user.role, `Created new ${payload.status} "${payload.title.slice(0, 45)}"`, 'success');
+            showToast('Publication saved', 'success');
+          }
+          persistState();
+          closeModal();
+          render();
+        });
+      }
+
+      // =========================================================================
+      // 13. EVENT BINDING & RENDER LOOP
+      // =========================================================================
+      function bindViewEvents() {
+        document.querySelectorAll('.open-article-btn').forEach(btn => {
+          btn.addEventListener('click', () => navigate('reader', { articleId: btn.getAttribute('data-id') }));
+        });
+        document.querySelectorAll('.cite-btn').forEach(btn => {
+          btn.addEventListener('click', () => openCitationModal(btn.getAttribute('data-id')));
+        });
+        document.querySelectorAll('.save-btn').forEach(btn => {
+          btn.addEventListener('click', () => toggleSaved(btn.getAttribute('data-id')));
+        });
+        document.querySelectorAll('.nav-inline-btn').forEach(btn => {
+          btn.addEventListener('click', () => navigate(btn.getAttribute('data-nav')));
+        });
+        document.querySelectorAll('.authority-link').forEach(btn => {
+          btn.addEventListener('click', () => openAuthorityModal(btn.getAttribute('data-auth-id')));
+        });
+
+        // Journal search & filters
+        const searchInput = document.getElementById('journal-search-input');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            state.searchQuery = e.target.value;
+            render();
+            const el = document.getElementById('journal-search-input');
+            if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+          });
+        }
+        const sortSelect = document.getElementById('journal-sort-select');
+        if (sortSelect) sortSelect.addEventListener('change', (e) => { state.sortBy = e.target.value; render(); });
+        document.querySelectorAll('.cat-pill').forEach(btn => {
+          btn.addEventListener('click', () => { state.categoryFilter = btn.getAttribute('data-cat'); render(); });
+        });
+        const clearBtn = document.getElementById('clear-filters-btn');
+        if (clearBtn) clearBtn.addEventListener('click', () => { state.searchQuery = ''; state.categoryFilter = 'All'; state.sortBy = 'newest'; render(); });
+
+        // Archives RSS
+        const archRss = document.getElementById('archive-rss-btn');
+        if (archRss) archRss.addEventListener('click', () => { downloadFile('a-legal-note-rss.xml', generateRssXml(), 'application/rss+xml'); showToast('RSS feed downloaded', 'success'); });
+
+        // Reader controls
+        const backBtn = document.getElementById('back-to-journal-btn');
+        if (backBtn) backBtn.addEventListener('click', () => navigate('journal'));
+        const decBtn = document.getElementById('font-dec-btn');
+        if (decBtn) decBtn.addEventListener('click', () => { state.readerFontSize = Math.max(14, state.readerFontSize - 1); render(); });
+        const incBtn = document.getElementById('font-inc-btn');
+        if (incBtn) incBtn.addEventListener('click', () => { state.readerFontSize = Math.min(22, state.readerFontSize + 1); render(); });
+        const printBtn = document.getElementById('print-paper-btn');
+        if (printBtn) printBtn.addEventListener('click', () => window.print());
+        const pdfBtn = document.getElementById('download-pdf-btn');
+        if (pdfBtn) {
+          pdfBtn.addEventListener('click', () => {
+            const art = state.articles.find(a => a.id === state.selectedArticleId);
+            if (art) downloadTypesetPdf(art);
+          });
+        }
+        const listenBtn = document.getElementById('listen-paper-btn');
+        if (listenBtn) {
+          listenBtn.addEventListener('click', () => {
+            const art = state.articles.find(a => a.id === state.selectedArticleId);
+            if (art) toggleSpeechForArticle(art);
+          });
+        }
+
+        // Private reader notes
+        const noteForm = document.getElementById('add-reader-note-form');
+        if (noteForm) {
+          noteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inp = document.getElementById('reader-note-input');
+            const text = inp.value.trim();
+            if (!text || !state.selectedArticleId) return;
+            if (!state.readerNotes[state.selectedArticleId]) state.readerNotes[state.selectedArticleId] = [];
+            state.readerNotes[state.selectedArticleId].unshift({ id: generateId('NOTE'), text, date: formatDate(new Date().toISOString()) });
+            persistState();
+            showToast('Study note saved', 'success');
+            render();
+          });
+        }
+        document.querySelectorAll('.del-reader-note-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const nid = btn.getAttribute('data-note-id');
+            if (!state.selectedArticleId || !state.readerNotes[state.selectedArticleId]) return;
+            state.readerNotes[state.selectedArticleId] = state.readerNotes[state.selectedArticleId].filter(n => n.id !== nid);
+            persistState();
+            render();
+          });
+        });
+        const exportNotesBtn = document.getElementById('export-notes-btn');
+        if (exportNotesBtn) {
+          exportNotesBtn.addEventListener('click', () => {
+            const art = state.articles.find(a => a.id === state.selectedArticleId);
+            const notes = state.readerNotes[state.selectedArticleId] || [];
+            const txt = `A Legal Note — Study Notes\nPaper: ${art.title}\nCitation: ${art.citationCode}\n\n` + notes.map((n, i) => `${i + 1}. [${n.date}] ${n.text}`).join('\n');
+            downloadFile(`notes-${art.id}.txt`, txt, 'text/plain');
+            showToast('Notes exported', 'success');
+          });
+        }
+
+        // Submit form word counter, file upload & originality check
+        const subBody = document.getElementById('sub-body');
+        const subWordCount = document.getElementById('sub-word-count');
+        if (subBody && subWordCount) {
+          subBody.addEventListener('input', () => { subWordCount.textContent = countWords(subBody.value) + ' words'; });
+        }
+        const subFile = document.getElementById('sub-file-input');
+        if (subFile) {
+          subFile.addEventListener('change', (e) => {
+            const f = e.target.files[0];
+            if (!f) return;
+            state.pendingAttachmentName = f.name;
+            const lbl = document.getElementById('sub-file-label');
+            if (lbl) lbl.textContent = 'Attached: ' + f.name;
+            if (f.name.endsWith('.txt') || f.name.endsWith('.md')) {
+              const r = new FileReader();
+              r.onload = () => {
+                if (subBody) {
+                  subBody.value = String(r.result || '');
+                  if (subWordCount) subWordCount.textContent = countWords(subBody.value) + ' words';
+                }
+                showToast('Text imported from ' + f.name, 'success');
+              };
+              r.readAsText(f);
+            } else {
+              showToast(`Attached ${f.name}`, 'info');
+            }
+          });
+        }
+        const simBtn = document.getElementById('run-similarity-btn');
+        if (simBtn) {
+          simBtn.addEventListener('click', () => {
+            const abs = document.getElementById('sub-abstract')?.value || '';
+            const bod = document.getElementById('sub-body')?.value || '';
+            const rep = computeOriginalityReport(abs + ' ' + bod);
+            const out = document.getElementById('similarity-check-output');
+            if (out) {
+              out.innerHTML = `<span class="font-semibold ${rep.originalityPct >= 85 ? 'text-emerald-700' : 'text-amber-700'}">Originality Score: ${rep.originalityPct}%</span> (${rep.similarityPct}% overlap${rep.matchedTitle ? ` with "${escapeHtml(rep.matchedTitle.slice(0, 42))}..."` : ' with journal archives'})`;
+            }
+          });
+        }
+
+        const subForm = document.getElementById('manuscript-submit-form');
+        if (subForm) {
+          subForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newId = 'ALN-2026-' + Math.floor(1000 + Math.random() * 9000);
+            const abs = document.getElementById('sub-abstract').value.trim();
+            const bod = document.getElementById('sub-body').value.trim();
+            const rep = computeOriginalityReport(abs + ' ' + bod);
+            const newSub = {
+              id: newId,
+              title: document.getElementById('sub-title').value.trim(),
+              type: document.getElementById('sub-type').value,
+              category: document.getElementById('sub-category').value,
+              author: document.getElementById('sub-author').value.trim(),
+              email: document.getElementById('sub-email').value.trim(),
+              affiliation: document.getElementById('sub-affiliation').value.trim(),
+              keywords: document.getElementById('sub-keywords').value.split(',').map(k => k.trim()).filter(Boolean),
+              abstract: abs,
+              body: bod,
+              attachmentName: state.pendingAttachmentName,
+              originalityPct: rep.originalityPct,
+              submittedDate: new Date().toISOString().slice(0, 10),
+              status: 'Initial Screening',
+              reviewerNotes: ''
+            };
+            state.submissions.unshift(newSub);
+            state.pendingAttachmentName = '';
+            state.trackerResult = newSub;
+            addAudit(newSub.email, 'Author', `Submitted manuscript ${newId} (${rep.originalityPct}% original)`, 'info');
+            persistState();
+            showToast(`Manuscript submitted! Tracking ID: ${newId}`, 'success');
+            render();
+          });
+        }
+
+        // Tracker
+        const trackForm = document.getElementById('track-status-form');
+        if (trackForm) {
+          trackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const q = document.getElementById('track-id-input').value.trim().toUpperCase();
+            if (!q) return;
+            const found = state.submissions.find(s => s.id.toUpperCase() === q);
+            state.trackerResult = found || { notFound: true, query: q };
+            render();
+          });
+        }
+        document.querySelectorAll('.sample-track-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-track');
+            state.trackerResult = state.submissions.find(s => s.id === id) || { notFound: true, query: id };
+            render();
+          });
+        });
+
+        // Admin Login
+        document.querySelectorAll('.demo-cred-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const em = document.getElementById('login-email');
+            const pw = document.getElementById('login-password');
+            if (em && pw) { em.value = btn.getAttribute('data-email'); pw.value = btn.getAttribute('data-pass'); }
+          });
+        });
+
+        const loginForm = document.getElementById('admin-login-form');
+        if (loginForm) {
+          loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (state.session.lockedUntil > Date.now()) return;
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const pass = document.getElementById('login-password').value;
+            const user = state.staff.find(u => u.email.toLowerCase() === email && u.active);
+            const enteredHash = await hashPassword(pass);
+            const expectedHash = user ? await hashPassword(user.passPlain) : '';
+
+            if (!user || enteredHash !== expectedHash) {
+              state.session.failedAttempts += 1;
+              addAudit(email || 'unknown', 'Anonymous', `Failed admin login attempt (${state.session.failedAttempts}/${state.security.maxLoginAttempts})`, 'error');
+              if (state.session.failedAttempts >= state.security.maxLoginAttempts) {
+                state.session.lockedUntil = Date.now() + 30000;
+                state.session.failedAttempts = 0;
+                addAudit(email || 'unknown', 'Security', 'Triggered 30s brute-force lockout', 'warning');
+                showToast('Too many failed attempts. Locked for 30s.', 'error');
+                startLockoutTicker();
+              } else {
+                showToast('Invalid credentials or suspended account.', 'error');
+              }
+              render();
+              return;
+            }
+
+            state.session.failedAttempts = 0;
+            if (state.security.require2FA) {
+              state.session.pending2FAUser = user;
+              state.session.active2FACode = String(Math.floor(100000 + Math.random() * 900000));
+              render();
+            } else {
+              completeAdminLogin(user);
+            }
+          });
+        }
+
+        const twoFAForm = document.getElementById('admin-2fa-form');
+        if (twoFAForm) {
+          twoFAForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = document.getElementById('totp-input').value.trim();
+            if (code === state.session.active2FACode) {
+              completeAdminLogin(state.session.pending2FAUser);
+            } else {
+              addAudit(state.session.pending2FAUser.email, 'Security', 'Invalid 2FA verification code entered', 'warning');
+              showToast('Incorrect 6-digit code.', 'error');
+            }
+          });
+        }
+        const cancel2FA = document.getElementById('cancel-2fa-btn');
+        if (cancel2FA) cancel2FA.addEventListener('click', () => { state.session.pending2FAUser = null; state.session.active2FACode = null; render(); });
+
+        // Admin Authenticated Actions
+        const logoutBtn = document.getElementById('admin-logout-btn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', () => {
+            if (state.session.user) addAudit(state.session.user.email, state.session.user.role, 'Signed out of Admin Panel', 'info');
+            state.session.authenticated = false;
+            state.session.user = null;
+            clearInterval(sessionTimerInterval);
+            showToast('Admin session locked', 'info');
+            render();
+          });
+        }
+
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => { state.adminTab = btn.getAttribute('data-admin-tab'); touchAdminSession(); render(); });
+        });
+
+        const newArtBtn = document.getElementById('new-article-btn');
+        if (newArtBtn) newArtBtn.addEventListener('click', () => { touchAdminSession(); openArticleEditorModal(null); });
+
+        document.querySelectorAll('.edit-article-btn').forEach(btn => {
+          btn.addEventListener('click', () => { touchAdminSession(); openArticleEditorModal(btn.getAttribute('data-id')); });
+        });
+
+        document.querySelectorAll('.toggle-pub-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            touchAdminSession();
+            const art = state.articles.find(a => a.id === btn.getAttribute('data-id'));
+            if (!art) return;
+            art.status = art.status === 'Published' ? 'Draft' : 'Published';
+            addAudit(state.session.user.email, state.session.user.role, `Changed "${art.title.slice(0, 35)}" to ${art.status}`, 'info');
+            persistState();
+            showToast(`Status updated to ${art.status}`, 'success');
+            render();
+          });
+        });
+
+        document.querySelectorAll('.delete-article-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            touchAdminSession();
+            const id = btn.getAttribute('data-id');
+            const art = state.articles.find(a => a.id === id);
+            if (!art) return;
+            openConfirmModal('Delete Publication?', `This will permanently remove "${art.title}" from the journal.`, 'Delete Permanently', () => {
+              state.articles = state.articles.filter(a => a.id !== id);
+              addAudit(state.session.user.email, state.session.user.role, `Deleted publication ${id}`, 'warning');
+              persistState();
+              showToast('Publication deleted', 'info');
+              render();
+            });
+          });
+        });
+
+        // Submissions Queue
+        const blindToggle = document.getElementById('blind-mode-toggle');
+        if (blindToggle) blindToggle.addEventListener('change', (e) => { state.blindReviewMode = e.target.checked; render(); });
+
+        document.querySelectorAll('.sub-status-select').forEach(sel => {
+          sel.addEventListener('change', (e) => {
+            touchAdminSession();
+            const sub = state.submissions.find(s => s.id === sel.getAttribute('data-sub-id'));
+            if (!sub) return;
+            sub.status = e.target.value;
+            addAudit(state.session.user.email, state.session.user.role, `Updated manuscript ${sub.id} to ${sub.status}`, 'info');
+            persistState();
+            showToast(`${sub.id} marked as ${sub.status}`, 'success');
+            render();
+          });
+        });
+
+        document.querySelectorAll('.notify-author-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const sub = state.submissions.find(s => s.id === btn.getAttribute('data-sub-id'));
+            if (sub) openDecisionEmailModal(sub);
+          });
+        });
+
+        document.querySelectorAll('.save-sub-note-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            touchAdminSession();
+            const id = btn.getAttribute('data-sub-id');
+            const sub = state.submissions.find(s => s.id === id);
+            const inp = document.querySelector(`.sub-note-input[data-sub-id="${id}"]`);
+            if (!sub || !inp) return;
+            sub.reviewerNotes = inp.value.trim();
+            addAudit(state.session.user.email, state.session.user.role, `Saved review note on ${id}`, 'info');
+            persistState();
+            showToast('Reviewer note saved', 'success');
+          });
+        });
+
+        document.querySelectorAll('.promote-sub-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            touchAdminSession();
+            const id = btn.getAttribute('data-sub-id');
+            const sub = state.submissions.find(s => s.id === id);
+            if (!sub) return;
+            const rawBlocks = (sub.body || '').trim().split(/\n\s*\n/).filter(Boolean);
+            const sections = rawBlocks.map((b, i) => {
+              const lines = b.split('\n');
+              return lines.length > 1
+                ? { heading: lines[0].trim(), body: lines.slice(1).join('\n').trim() }
+                : { heading: i === 0 ? 'I. Introduction' : `Section ${i + 1}`, body: b.trim() };
+            });
+            const newArtId = 'art-' + Date.now().toString().slice(-5);
+            const pageNum = Math.floor(250 + Math.random() * 500);
+            state.articles.unshift({
+              id: newArtId,
+              title: sub.title,
+              type: sub.type,
+              category: sub.category,
+              author: sub.author,
+              affiliation: sub.affiliation || 'Contributor',
+              volume: 'Vol. 4',
+              issue: 'Issue 2',
+              year: 2026,
+              citationCode: `2026 ALN Vol. 4(2) ${pageNum}`,
+              doi: `10.5555/aln.2026.42.${pageNum}`,
+              publishedDate: new Date().toISOString().slice(0, 10),
+              status: 'Published',
+              peerReviewed: true,
+              featured: false,
+              views: 0,
+              keywords: sub.keywords || [sub.category],
+              abstract: sub.abstract,
+              sections,
+              footnotes: []
+            });
+            sub.status = 'Published';
+            addAudit(state.session.user.email, state.session.user.role, `Promoted manuscript ${sub.id} to live journal`, 'success');
+            persistState();
+            showToast(`Published "${sub.title.slice(0, 32)}..." live!`, 'success');
+            render();
+          });
+        });
+
+        // Security, RBAC & Backend Controls
+        const sec2fa = document.getElementById('sec-2fa-toggle');
+        if (sec2fa) sec2fa.addEventListener('change', (e) => { state.security.require2FA = e.target.checked; addAudit(state.session.user.email, state.session.user.role, `Set 2FA enforcement to ${e.target.checked}`, 'warning'); persistState(); showToast('2FA policy updated', 'success'); });
+        const secSubs = document.getElementById('sec-subs-toggle');
+        if (secSubs) secSubs.addEventListener('change', (e) => { state.security.submissionsOpen = e.target.checked; addAudit(state.session.user.email, state.session.user.role, `Public submissions ${e.target.checked ? 'opened' : 'paused'}`, 'info'); persistState(); showToast('Submission portal updated', 'success'); });
+        const secTimeout = document.getElementById('sec-timeout-select');
+        if (secTimeout) secTimeout.addEventListener('change', (e) => { state.security.sessionTimeoutMinutes = Number(e.target.value); touchAdminSession(); addAudit(state.session.user.email, state.session.user.role, `Session timeout set to ${e.target.value} min`, 'info'); persistState(); render(); });
+
+        document.querySelectorAll('.toggle-staff-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const st = state.staff.find(u => u.id === btn.getAttribute('data-staff-id'));
+            if (!st) return;
+            st.active = !st.active;
+            addAudit(state.session.user.email, state.session.user.role, `${st.active ? 'Restored' : 'Suspended'} staff account ${st.email}`, 'warning');
+            persistState();
+            showToast(`${st.email} ${st.active ? 'restored' : 'suspended'}`, 'info');
+            render();
+          });
+        });
+
+        const addStaffForm = document.getElementById('add-staff-form');
+        if (addStaffForm) {
+          addStaffForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('staff-email-inp').value.trim().toLowerCase();
+            const role = document.getElementById('staff-role-inp').value;
+            if (state.staff.some(u => u.email.toLowerCase() === email)) {
+              showToast('Email already exists', 'error');
+              return;
+            }
+            const tempPass = 'ALN@' + Math.floor(1000 + Math.random() * 9000);
+            state.staff.push({ id: generateId('USR'), name: role, email, role, passPlain: tempPass, active: true });
+            addAudit(state.session.user.email, state.session.user.role, `Added ${role} (${email})`, 'success');
+            persistState();
+            showToast(`Added ${email} (Temp password: ${tempPass})`, 'success');
+            render();
+          });
+        }
+
+        const exportBtn = document.getElementById('export-json-btn');
+        if (exportBtn) {
+          exportBtn.addEventListener('click', () => {
+            downloadFile(`a-legal-note-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ articles: state.articles, submissions: state.submissions, security: state.security, staff: state.staff }, null, 2), 'application/json');
+            addAudit(state.session.user.email, state.session.user.role, 'Exported JSON database backup', 'info');
+            showToast('Backup exported as JSON', 'success');
+          });
+        }
+
+        const importInput = document.getElementById('import-json-input');
+        if (importInput) {
+          importInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+              try {
+                const parsed = JSON.parse(reader.result);
+                if (Array.isArray(parsed.articles)) state.articles = parsed.articles;
+                if (Array.isArray(parsed.submissions)) state.submissions = parsed.submissions;
+                if (parsed.security) state.security = { ...DEFAULT_SECURITY, ...parsed.security };
+                addAudit(state.session.user.email, state.session.user.role, 'Restored database from JSON backup', 'warning');
+                persistState();
+                showToast('Backup restored successfully', 'success');
+                render();
+              } catch (err) {
+                showToast('Invalid JSON backup file', 'error');
+              }
+            };
+            reader.readAsText(file);
+          });
+        }
+
+        const adminRss = document.getElementById('admin-rss-btn');
+        if (adminRss) adminRss.addEventListener('click', () => { downloadFile('a-legal-note-rss.xml', generateRssXml(), 'application/rss+xml'); showToast('RSS XML downloaded', 'success'); });
+        const adminCrossref = document.getElementById('admin-crossref-btn');
+        if (adminCrossref) {
+          adminCrossref.addEventListener('click', () => {
+            const first = getPublishedArticles()[0];
+            if (first) { downloadFile(`crossref-${first.id}.xml`, generateCrossrefXml(first), 'application/xml'); showToast('Crossref XML downloaded', 'success'); }
+          });
+        }
+        const copySql = document.getElementById('copy-sql-btn');
+        if (copySql) copySql.addEventListener('click', () => copyTextToClipboard(SUPABASE_SQL_SCHEMA).then(() => showToast('Supabase SQL schema copied', 'success')));
+        const dlSql = document.getElementById('download-sql-btn');
+        if (dlSql) dlSql.addEventListener('click', () => { downloadFile('supabase_schema.sql', SUPABASE_SQL_SCHEMA, 'text/sql'); showToast('supabase_schema.sql downloaded', 'success'); });
+
+        renderAdminCharts();
+      }
+
+      function completeAdminLogin(user) {
+        state.session.authenticated = true;
+        state.session.user = user;
+        state.session.pending2FAUser = null;
+        state.session.active2FACode = null;
+        state.session.lastActivity = Date.now();
+        addAudit(user.email, user.role, 'Signed in to Admin Panel', 'success');
+        showToast(`Welcome, ${user.role}`, 'success');
+        startSessionTicker();
+        render();
+      }
+
+      function touchAdminSession() {
+        state.session.lastActivity = Date.now();
+      }
+
+      function startSessionTicker() {
+        clearInterval(sessionTimerInterval);
+        sessionTimerInterval = setInterval(() => {
+          if (!state.session.authenticated) { clearInterval(sessionTimerInterval); return; }
+          const remainingMs = (state.security.sessionTimeoutMinutes * 60000) - (Date.now() - state.session.lastActivity);
+          if (remainingMs <= 0) {
+            addAudit(state.session.user.email, 'Security', 'Auto-locked session due to inactivity', 'warning');
+            state.session.authenticated = false;
+            state.session.user = null;
+            clearInterval(sessionTimerInterval);
+            showToast('Session expired for security', 'warning');
+            render();
+            return;
+          }
+          const el = document.getElementById('session-countdown');
+          if (el) {
+            const m = Math.floor(remainingMs / 60000);
+            const s = Math.floor((remainingMs % 60000) / 1000).toString().padStart(2, '0');
+            el.textContent = `${m}:${s}`;
+          }
+        }, 1000);
+      }
+
+      function startLockoutTicker() {
+        clearInterval(lockoutTimerInterval);
+        lockoutTimerInterval = setInterval(() => {
+          const secs = Math.ceil((state.session.lockedUntil - Date.now()) / 1000);
+          if (secs <= 0) { clearInterval(lockoutTimerInterval); render(); return; }
+          const el = document.getElementById('lockout-secs');
+          if (el) el.textContent = secs;
+        }, 1000);
+      }
+
+      function render() {
+        applyTheme();
+        updateNavUI();
+        const root = document.getElementById('app-root');
+        if (state.view === 'journal') root.innerHTML = renderJournalView();
+        else if (state.view === 'reader') root.innerHTML = renderReaderView();
+        else if (state.view === 'archives') root.innerHTML = renderArchivesView();
+        else if (state.view === 'submit') root.innerHTML = renderSubmitView();
+        else if (state.view === 'saved') root.innerHTML = renderSavedView();
+        else if (state.view === 'admin') root.innerHTML = renderAdminPanel();
+        bindViewEvents();
+        if (window.lucide) lucide.createIcons();
+      }
+
+      // =========================================================================
+      // 14. GLOBAL LISTENERS & BOOT
+      // =========================================================================
+      function init() {
+        loadState();
+
+        document.getElementById('brand-home-btn').addEventListener('click', () => navigate('journal'));
+        document.querySelectorAll('[data-nav]').forEach(btn => {
+          btn.addEventListener('click', () => navigate(btn.getAttribute('data-nav')));
+        });
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+          document.getElementById('mobile-nav').classList.toggle('hidden');
+        });
+        document.getElementById('cmd-palette-btn').addEventListener('click', openCommandPalette);
+        document.getElementById('mobile-cmd-btn').addEventListener('click', () => {
+          document.getElementById('mobile-nav').classList.add('hidden');
+          openCommandPalette();
+        });
+        document.getElementById('footer-rss-btn').addEventListener('click', () => {
+          downloadFile('a-legal-note-rss.xml', generateRssXml(), 'application/rss+xml');
+          showToast('RSS feed downloaded', 'success');
+        });
+        document.getElementById('theme-cycle-btn').addEventListener('click', () => {
+          const order = ['light', 'sepia', 'dark'];
+          state.theme = order[(order.indexOf(state.theme) + 1) % order.length];
+          persistState();
+          render();
+        });
+        document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+          if (e.target.id === 'modal-backdrop') closeModal();
+        });
+
+        window.addEventListener('keydown', (e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            openCommandPalette();
+          } else if (e.key === 'Escape') {
+            closeModal();
+          }
+        });
+
+        window.addEventListener('scroll', () => {
+          if (state.view !== 'reader') return;
+          const bar = document.getElementById('reading-progress-bar');
+          if (!bar) return;
+          const docH = document.documentElement.scrollHeight - window.innerHeight;
+          const pct = docH > 0 ? Math.min(100, Math.max(0, (window.scrollY / docH) * 100)) : 0;
+          bar.style.width = pct + '%';
+        }, { passive: true });
+
+        render();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
